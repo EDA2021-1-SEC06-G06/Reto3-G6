@@ -40,7 +40,9 @@ def init():
     analyzer = model.newAnalyzer()
     return analyzer
 
+
 # Funciones para la carga de datos
+
 
 def loadEvents(analyzer):
     """
@@ -86,3 +88,9 @@ def getCar(analyzer, car):
 def getValuesReq1(tree, bajo, alto):
 
     return model.getValuesReq1(tree, bajo, alto)
+
+
+
+def getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo):
+
+    return model.getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo)

@@ -147,6 +147,30 @@ def getValuesReq1(tree, bajo, alto):
     return suma, mapa
 
 
+def getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo):
+
+    instrumental = om.values(tree, bajoInstrumental, altoInstrumental)
+    
+    mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000)
+    
+    for node in lt.iterator(instrumental):
+
+        for event in lt.iterator(node):
+
+            if (event["tempo"] >= 40) and (event["tempo"] <= 60):
+
+                audio = event["track_id"]
+                existe = mp.contains(mapa, audio)
+
+                if (not existe):
+                    mp.put(mapa, audio, event)
+
+    return mapa
+
+
+
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 

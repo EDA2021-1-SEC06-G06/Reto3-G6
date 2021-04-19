@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+from random import randint
 import config as cf
 import sys
 import controller
@@ -46,7 +46,27 @@ def printMenu():
     print("4- REQ 3: Encontrar música para estudiar")
     print("5- REQ 4: Estudiar los géneros musicales")
     print("6- REQ 5: Indicar el género musical más escuchado en el tiempo")
+    print("0- APAGAR EL PROGRAMA")
     print("*" * 70)
+
+
+def printReq3(mapa):
+    size = mp.size(mapa)
+    print("Total of unique tracks in events: {0}".format(size))
+    llaves = mp.keySet(mapa)
+    print("\n--- Unique track_id ---")
+
+    for num in range(5):
+        numRandom = randint(1, size)
+
+        track = lt.getElement(llaves, numRandom)
+        track = mp.get(mapa, track)['value']
+
+        print("Track {0}: {1} with instrumentalness of {2} and tempo of {3}".format((num + 1), track["track_id"], track["instrumentalness"], track['tempo']))
+
+    mapa = None
+
+
 
 
 catalog = None
@@ -90,6 +110,29 @@ while True:
         
         mapa = None
         newTree = None  # Espacio en Memoria
+
+
+    elif int(inputs[0]) == 4:
+        print("\n++++++ Req No. 3 results... ++++++")
+        newTree = controller.getCar(analyzer, 'instrumentalness')
+
+        # bajoInstrumental = float(input("Ingrese el mínimo del rango para Instrumentalness:\n~"))  TODO: Ver si el usuario ingresa estos valores
+        # altoInstrumental = float(input("Ingrese el máximo del rango para Instrumentalness:\n~"))
+
+        bajoInstrumental = 0.6
+        altoInstrumental = 0.9
+
+        bajoTempo = 40
+        altoTempo = 60
+        
+        print("Instrumentalness is between {0} and {1}".format(bajoInstrumental, altoInstrumental))
+        print("Tempo is between {0} and {1}".format(bajoTempo, altoTempo))
+
+        mapaVideosRango = controller.getValuesReq3(newTree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo)
+
+        printReq3(mapaVideosRango)
+
+
 
     else:
         sys.exit(0)
