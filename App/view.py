@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
 assert cf
 
 
@@ -34,10 +35,17 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- REQ 1: Caracterizar las reproducciones")
+    print("3- REQ 2: Encontrar música para festejar")
+    print("4- REQ 3: Encontrar música para estudiar")
+    print("5- REQ 4: Estudiar los géneros musicales")
+    print("6- REQ 5: Indicar el género musical más escuchado en el tiempo")
+    print("*"*60)
+
 
 catalog = None
 
@@ -49,6 +57,15 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        # cont es el controlador que se usará de acá en adelante
+        analyzer = controller.init()
+        controller.loadEvents(analyzer)
+
+        print("Cantidad de Eventos: {0}".format(lt.size(analyzer['eventos'])))
+
+        print("Cantidad de Artistas: {0}".format(mp.size(analyzer['artistas'])))
+        
+        print("Cantidad de Tracks: {0}".format(mp.size(analyzer['audios'])))
 
     elif int(inputs[0]) == 2:
         pass

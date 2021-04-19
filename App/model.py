@@ -27,24 +27,98 @@
 
 import config as cf
 from DISClib.ADT import list as lt
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
 
-"""
-Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
-los mismos.
-"""
 
 # Construccion de modelos
 
+def newAnalyzer():
+    analyzer = {'eventos': None, 'artistas': None, 'audios': None}
+
+    analyzer['eventos'] = lt.newList('ARRAY_LIST')
+
+    analyzer['artistas'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpArtistas)
+
+    analyzer['audios'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpTrack)
+
+    return analyzer
+
+
 # Funciones para agregar informacion al catalogo
+
+
+def addEvent(analyzer, filtered: dict):
+    """
+    """
+
+    datos = analyzer['eventos']
+    
+    lt.addLast(datos, filtered)
+
+
+def addArtist(analyzer, filtered):
+    """
+
+    """
+
+    datos = analyzer['artistas']
+
+    artista = mp.get(datos, filtered["artist_id"])
+    
+    if (artista is None):
+        lista = lt.newList("ARRAY_LIST")
+        lt.addLast(lista, filtered)
+
+        mp.put(datos, filtered['artist_id'], lista)
+    else:
+        
+        lt.addLast(artista['value'], filtered)
+
+
+def addTrack(analyzer, filtered):
+    # artist arbol -> 
+
+    datos = analyzer['audios']
+
+    track = mp.get(datos, filtered["track_id"])
+    
+    if (track is None):
+        lista = lt.newList("ARRAY_LIST")
+        lt.addLast(lista, filtered)
+
+        mp.put(datos, filtered['track_id'], lista)
+    else:
+        
+        lt.addLast(track['value'], filtered)
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+
+def cmpArtistas(artist1, artist2):
+    artista = me.getKey(artist2)
+    if artist1 == artista:
+        return 0
+    elif artist1 > artista:
+        return 1
+    else:
+        return -1
+
+
+def cmpTrack(track1, track2):
+    track = me.getKey(track2)
+    if track1 == track:
+        return 0
+    elif track1 > track:
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento

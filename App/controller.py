@@ -31,7 +31,48 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 # Inicialización del Catálogo de libros
 
+
+def init():
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # catalog es utilizado para interactuar con el modelo
+    analyzer = model.newAnalyzer()
+    return analyzer
+
 # Funciones para la carga de datos
+
+def loadEvents(analyzer):
+    """
+    Carga los datos de los archivos CSV en el modelo
+    """
+    context = cf.data_dir + 'context_content_features-small.csv'
+    input_file = csv.DictReader(open(context, encoding="utf-8"),
+                                delimiter=",")
+    # "artist_id","track_id","user_id","id"
+    for line in input_file:
+        filtered = {
+            "instrumentalness": float(line["instrumentalness"]),
+            "liveness": float(line["liveness"]),
+            "speechiness": float(line["speechiness"]),
+            "danceability": float(line["danceability"]),
+            "valence": float(line["valence"]),
+            "loudness": float(line["loudness"]),
+            "tempo": float(line["tempo"]),
+            "acousticness": float(line["acousticness"]),
+            "energy": float(line["energy"]),
+            "mode": float(line["mode"]),
+            "key": float(line["key"]),
+            "artist_id": line["artist_id"],
+            "track_id": line["track_id"],
+            "user_id": line["user_id"],
+            "id": line["id"]
+        }
+        model.addEvent(analyzer, filtered)
+        model.addArtist(analyzer, filtered)
+        model.addTrack(analyzer, filtered)
+    return analyzer
+
 
 # Funciones de ordenamiento
 
