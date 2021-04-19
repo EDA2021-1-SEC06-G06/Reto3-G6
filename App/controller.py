@@ -77,3 +77,7 @@ def loadEvents(analyzer):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def getCar(analyzer, car):
+
+    return model.getCar(analyzer, car)

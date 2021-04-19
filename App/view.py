@@ -25,6 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
+from DISClib.ADT import orderedmap as om
 assert cf
 
 
@@ -68,7 +69,16 @@ while True:
         print("Cantidad de Tracks: {0}".format(mp.size(analyzer['audios'])))
 
     elif int(inputs[0]) == 2:
-        pass
+        car = input("Ingrese la característica de contenido que desea: ")  # Test con 'instrumentalness'
+
+        print("Cargando datos según la característica....")
+
+        newTree = controller.getCar(analyzer, car)
+
+        print("Altura del árbol de la característica: {0}".format(om.height(newTree)))
+        print("Cantidad de valores (Nodos) en el árbol: {0}".format(om.size(newTree)))
+
+        newTree = None  # Espacio en Memoria
 
     else:
         sys.exit(0)

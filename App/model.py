@@ -99,6 +99,36 @@ def addTrack(analyzer, filtered):
 
 # Funciones de consulta
 
+def getCar(analyzer, car: str):
+
+    datos = analyzer['eventos']
+
+    newTree = om.newMap(omaptype='RBT', comparefunction=cmpCarValue)
+
+    for audio in lt.iterator(datos):
+
+        valor = audio[car]
+
+        entry = om.get(newTree, valor)
+
+        if not entry:
+            lista = lt.newList("ARRAY_LIST")
+            lt.addLast(lista, audio)
+
+            om.put(newTree, valor, lista)
+        
+        else:
+
+            lt.addLast(entry['value'], audio)
+    
+    return newTree
+
+
+
+
+
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 
@@ -121,4 +151,13 @@ def cmpTrack(track1, track2):
     else:
         return -1
 
+
+def cmpCarValue(c1, c2):
+
+    if c1 == c2:
+        return 0
+    elif c1 > c2:
+        return 1
+    else:
+        return -1
 # Funciones de ordenamiento
