@@ -63,7 +63,7 @@ def loadEvents(analyzer):
             "energy": float(line["energy"]),
             "mode": float(line["mode"]),
             "key": float(line["key"]),
-            "artist_id": line["artist_id"],
+            "artist_id": line["artist_id"].replace(" ", ''),
             "track_id": line["track_id"],
             "user_id": line["user_id"],
             "id": line["id"]
@@ -81,3 +81,8 @@ def loadEvents(analyzer):
 def getCar(analyzer, car):
 
     return model.getCar(analyzer, car)
+
+
+def getValuesReq1(tree, bajo, alto):
+
+    return model.getValuesReq1(tree, bajo, alto)

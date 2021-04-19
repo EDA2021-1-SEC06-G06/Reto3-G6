@@ -39,13 +39,14 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
+    print("*" * 70)
     print("1- Cargar información en el catálogo")
     print("2- REQ 1: Caracterizar las reproducciones")
     print("3- REQ 2: Encontrar música para festejar")
     print("4- REQ 3: Encontrar música para estudiar")
     print("5- REQ 4: Estudiar los géneros musicales")
     print("6- REQ 5: Indicar el género musical más escuchado en el tiempo")
-    print("*"*60)
+    print("*" * 70)
 
 
 catalog = None
@@ -69,8 +70,13 @@ while True:
         print("Cantidad de Tracks: {0}".format(mp.size(analyzer['audios'])))
 
     elif int(inputs[0]) == 2:
-        car = input("Ingrese la característica de contenido que desea: ")  # Test con 'instrumentalness'
+        car = input("Ingrese la característica de contenido que desea:\n~")  # Test con 'instrumentalness'
+        # bajo = float(input("Ingrese el mínimo del rango:\n~"))
+        # alto = float(input("Ingrese el máximo del rango:\n~"))
 
+        car = 'instrumentalness'
+        bajo = 0.0
+        alto = 0.0
         print("Cargando datos según la característica....")
 
         newTree = controller.getCar(analyzer, car)
@@ -78,6 +84,11 @@ while True:
         print("Altura del árbol de la característica: {0}".format(om.height(newTree)))
         print("Cantidad de valores (Nodos) en el árbol: {0}".format(om.size(newTree)))
 
+        total, mapa = controller.getValuesReq1(newTree, bajo, alto)
+
+        print("Total de reproducción: {0}\nTotal de artistas únicos: {1}".format(total, mp.size(mapa)))
+        
+        mapa = None
         newTree = None  # Espacio en Memoria
 
     else:
