@@ -69,6 +69,23 @@ def printReq3(mapa):
     mapa = None
 
 
+def printGeneros(mapa):
+
+    size = mp.size(mapa)
+
+    llaves = mp.keySet(mapa)
+    
+    posicion = 1
+
+    print("### Los géneros existentes son los siguientes ###")
+    while posicion <= size:
+
+        llave = lt.getElement(llaves, posicion)
+
+        print("•{0}".format(llave))
+
+        posicion += 1
+
 
 
 catalog = None
@@ -166,25 +183,26 @@ while True:
         print("\n++++++ Req No. 4 results... ++++++\n")
         newTree = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
 
-        genreMap = controller.genreMap()
+        genreMap = controller.genreMap(newTree)  # TODO: Ver si volvemos genreMap global 
 
         centinela = True
 
         while centinela is True:
+            printGeneros(genreMap)
 
-            opcion = int(input("\nIngrese (1) si desea cosultar géneros existentes, ingrese (2) si desea agregar un nuevo género e ingrese (3) si no desea consultar más géneros:\n~"))
+            opcion = int(input("\n-Ingrese (1) si desea consultar los géneros existentes\n-Ingrese (2) si desea agregar un nuevo género\n-Ingrese (3) si no desea consultar más géneros\n~ "))
 
             if opcion == 1:
-
-                genero = input("\nIngrese los generos que desea consultar, separados por comas y espacios:\n~")
-
+                genero = input("\nIngrese los generos que desea consultar, separados por comas y espacios:\n~ ")
+                # TODO: Lista para consultar esos géneros
+                
             elif opcion == 2:
-
-                genero = input("\nIngrese el nombre del género que desea registrar:\n~")
-                bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~".format(genero)))
-                altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~".format(genero)))
-                rango = (bajoTempo, altoTempo)
-                genreMap = controller.addGenre(genreMap, genero, rango)
+                genero = input("\nIngrese el nombre del género que desea registrar:\n~ ")
+                
+                bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~ ".format(genero)))
+                altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~ ".format(genero)))
+                
+                genreMap = controller.addGenre(genreMap, genero, bajoTempo, altoTempo, newTree)
 
             else:
 

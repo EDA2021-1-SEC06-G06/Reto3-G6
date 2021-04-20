@@ -247,35 +247,54 @@ def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
 
 
 
-def genreMap():
+def genreMap(tree):
 
     genreMap = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
 
-    mp.put(genreMap, "reggae", (60, 90))
 
-    mp.put(genreMap, "down-tempo", (70, 100))
+    addGenre(genreMap, "reggae", 60, 90, tree)
 
-    mp.put(genreMap, "chill-out", (90, 120))
+    
+    addGenre(genreMap, "down-tempo", 70, 100, tree)
+    
 
-    mp.put(genreMap, "hip-hop", (85, 115))
+    addGenre(genreMap, "chill-out", 90, 120, tree)
+    
 
-    mp.put(genreMap, "jazz and funk", (120, 125))
+    addGenre(genreMap, "hip-hop", 85, 115, tree)
 
-    mp.put(genreMap, "pop", (100, 130))
 
-    mp.put(genreMap, "r&b", (60, 80))
+    addGenre(genreMap, "jazz and funk", 120, 125, tree)
 
-    mp.put(genreMap, "rock", (110, 140))
 
-    mp.put(genreMap, "metal", (100, 160))
+    addGenre(genreMap, "pop", 100, 130, tree)
+
+
+    addGenre(genreMap, "r&b", 60, 80, tree)
+    
+
+    addGenre(genreMap, "rock", 110, 140, tree)
+    
+    
+    addGenre(genreMap, "metal", 100, 160, tree)
+
 
     return genreMap
 
 
-def addGenre(mapa, genero, rango):
+def addGenre(mapa, genero, bajo, alto, tree):
 
-    return mp.put(mapa, genero, rango)
+    keyName = genero.lower()
 
+    valoresKey = {
+        'bajo': bajo,
+        'alto': alto,
+        'eventos': om.values(tree, bajo, alto)
+    }
+    
+    mp.put(mapa, keyName, valoresKey)
+
+    return mapa
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
