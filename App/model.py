@@ -147,25 +147,46 @@ def getValuesReq1(tree, bajo, alto):
     return suma, mapa
 
 
-def getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo):
+def getValuesReq3(tree=None, 
+                  bajoInstrumental=0.6,
+                  altoInstrumental=0.9,
+                  bajoTempo=40,
+                  altoTempo=60):
+    """Retorna un mapa con los tracks en un rango de instrumentalness y tempo
 
-    instrumental = om.values(tree, bajoInstrumental, altoInstrumental)
+    Args:
+        tree (dict, mapa): Árbol según Instrumentalness. Defaults to None.
+        bajoInstrumental (float): Rango inferior Instrumentalness. Defaults to 0.6.
+        altoInstrumental (float): Rango superior Instrumentalness. Defaults to 0.9.
+        bajoTempo (float): Rango inferior Tempo. Defaults to 40.
+        altoTempo (float): Rango superior Tempo. Defaults to 60.
+
+    Returns:
+        dict: Mapa (PROBING) de los tracks en los rangos elegidos
+    """
     
-    mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000)
-    
-    for node in lt.iterator(instrumental):
+    if tree is not None:  # Si el árbol no es None
+        
+        instrumental = om.values(tree, bajoInstrumental, altoInstrumental)
+        
+        mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000)
+        
+        for node in lt.iterator(instrumental):
 
-        for event in lt.iterator(node):
+            for event in lt.iterator(node):  # Cada evento contiene info del csv context
 
-            if (event["tempo"] >= 40) and (event["tempo"] <= 60):
+                if (event["tempo"] >= 40) and (event["tempo"] <= 60):
 
-                audio = event["track_id"]
-                existe = mp.contains(mapa, audio)
+                    audio = event["track_id"]
+                    existe = mp.contains(mapa, audio)
 
-                if (not existe):
-                    mp.put(mapa, audio, event)
+                    if (not existe):  # se usa un mapa para no repetir tracks
+                        mp.put(mapa, audio, event)
 
-    return mapa
+        return mapa
+
+    else:
+        return None
 
 
 

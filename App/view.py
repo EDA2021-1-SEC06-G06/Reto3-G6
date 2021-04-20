@@ -53,14 +53,16 @@ def printMenu():
 def printReq3(mapa):
     size = mp.size(mapa)
     print("Total of unique tracks in events: {0}".format(size))
+    
     llaves = mp.keySet(mapa)
+    
     print("\n--- Unique track_id ---")
 
     for num in range(5):
-        numRandom = randint(1, size)
+        numRandom = randint(1, size)  # número al azar entre 1 y el size del mapa
 
-        track = lt.getElement(llaves, numRandom)
-        track = mp.get(mapa, track)['value']
+        track = lt.getElement(llaves, numRandom)  # se optiene el track_id de uno de los tracks al azar
+        track = mp.get(mapa, track)['value']  # se obtiene el valor de la pareja (llave - valor)
 
         print("Track {0}: {1} with instrumentalness of {2} and tempo of {3}".format((num + 1), track["track_id"], track["instrumentalness"], track['tempo']))
 
@@ -114,24 +116,21 @@ while True:
 
     elif int(inputs[0]) == 4:
         print("\n++++++ Req No. 3 results... ++++++")
-        newTree = controller.getCar(analyzer, 'instrumentalness')
+        newTree = controller.getCar(analyzer, 'instrumentalness')  # árbol según valores de "instrumentalness"
 
-        # bajoInstrumental = float(input("Ingrese el mínimo del rango para Instrumentalness:\n~"))  TODO: Ver si el usuario ingresa estos valores
-        # altoInstrumental = float(input("Ingrese el máximo del rango para Instrumentalness:\n~"))
+        bajoInstrumental = float(input("Ingrese el mínimo del rango para Instrumentalness:\n~")) 
+        altoInstrumental = float(input("Ingrese el máximo del rango para Instrumentalness:\n~"))
 
-        bajoInstrumental = 0.6
-        altoInstrumental = 0.9
+        bajoTempo = float(input("Ingrese el mínimo del rango para Tempo:\n~"))
+        altoTempo = float(input("Ingrese el máximo del rango para Instrumentalness:\n~"))
 
-        bajoTempo = 40
-        altoTempo = 60
+        mapaVideosRango = controller.getValuesReq3(newTree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo)
+        # ^^ un mapa con los vídeos dentro del rango
         
         print("Instrumentalness is between {0} and {1}".format(bajoInstrumental, altoInstrumental))
         print("Tempo is between {0} and {1}".format(bajoTempo, altoTempo))
 
-        mapaVideosRango = controller.getValuesReq3(newTree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo)
-
-        printReq3(mapaVideosRango)
-
+        printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
 
 
     else:

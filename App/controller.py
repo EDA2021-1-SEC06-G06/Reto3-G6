@@ -92,5 +92,16 @@ def getValuesReq1(tree, bajo, alto):
 
 
 def getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo):
+    """Retorna un mapa con los tracks en un rango de instrumentalness y tempo
 
+    Args:
+        tree (dict, mapa): Árbol según Instrumentalness. Defaults to None.
+        bajoInstrumental (float): Rango inferior Instrumentalness. Defaults to 0.6.
+        altoInstrumental (float): Rango superior Instrumentalness. Defaults to 0.9.
+        bajoTempo (float): Rango inferior Tempo. Defaults to 40.
+        altoTempo (float): Rango superior Tempo. Defaults to 60.
+
+    Returns:
+        dict: Mapa (PROBING) de los tracks en los rangos elegidos
+    """
     return model.getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo)
