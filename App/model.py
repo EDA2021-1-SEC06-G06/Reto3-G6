@@ -272,6 +272,12 @@ def genreMap():
     return genreMap
 
 
+def addGenre(mapa, genero, rango):
+
+    return mp.put(mapa, genero, rango)
+
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 

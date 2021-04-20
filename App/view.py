@@ -183,12 +183,13 @@ while True:
                 genero = input("\nIngrese el nombre del género que desea registrar:\n~")
                 bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~".format(genero)))
                 altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~".format(genero)))
+                rango = (bajoTempo, altoTempo)
+                genreMap = controller.addGenre(genreMap, genero, rango)
 
-            if opcion == 3:
+            else:
 
                 centinela = False
 
-        print(controller.genreMap())
 
 
 

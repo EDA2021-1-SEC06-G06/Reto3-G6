@@ -139,4 +139,11 @@ def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
 
 
 def genreMap():
+    """
+    Crea un mapa con los géneros por defecto.
+    """
     return model.genreMap()
+
+
+def addGenre(mapa, genero, rango):
+    return model.addGenre(mapa, genero, rango)
