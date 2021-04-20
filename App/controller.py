@@ -138,5 +138,5 @@ def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
     return model.getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq)
 
 
-def genreToTempo(generos):
-    return model.genreToTempo(generos)
+def genreMap():
+    return model.genreMap()

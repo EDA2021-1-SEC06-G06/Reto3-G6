@@ -247,45 +247,29 @@ def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
 
 
 
-def genreToTempo(generos):
-    listaGeneros = lt.newList(datastructure="ARRAY_LIST", delimiter=", ")
+def genreMap():
 
-    lt.addLast(listaGeneros, generos)
+    genreMap = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
 
-    tempos = lt.newList(datastructure="ARRAY_LIST")
+    mp.put(genreMap, "reggae", (60, 90))
 
-    for genero in lt.iterator(listaGeneros):
+    mp.put(genreMap, "down-tempo", (70, 100))
 
-        if genero.lower() == "reggae":
-            tempo = (60, 90)
+    mp.put(genreMap, "chill-out", (90, 120))
 
-        elif genero.lower() == "down-tempo":
-            tempo = (70, 100)
+    mp.put(genreMap, "hip-hop", (85, 115))
 
-        elif genero.lower() == "chill-out":
-            tempo = (90, 120)
+    mp.put(genreMap, "jazz and funk", (120, 125))
 
-        elif genero.lower() == "hip-hop":
-            tempo = (85, 115)
+    mp.put(genreMap, "pop", (100, 130))
 
-        elif genero.lower() == "jazz and funk":
-            tempo = (120, 125)
+    mp.put(genreMap, "r&b", (60, 80))
 
-        elif genero.lower() == "pop":
-            tempo = (100, 130)
+    mp.put(genreMap, "rock", (110, 140))
 
-        elif genero.lower() == "r&b":
-            tempo = (60, 80)
+    mp.put(genreMap, "metal", (100, 160))
 
-        elif genero.lower() == "rock":
-            tempo = (110, 140)
-
-        elif genero.lower() == "metal":
-            tempo = (100, 160)
-
-        lt.addLast(tempos, tempo)
-
-    return tempos
+    return genreMap
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
