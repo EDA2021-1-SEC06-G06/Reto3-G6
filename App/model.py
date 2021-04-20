@@ -56,7 +56,7 @@ def addEvent(analyzer, filtered: dict):
     """
 
     datos = analyzer['eventos']
-    
+
     lt.addLast(datos, filtered)
 
 
@@ -68,31 +68,31 @@ def addArtist(analyzer, filtered):
     datos = analyzer['artistas']
 
     artista = mp.get(datos, filtered["artist_id"])
-    
+
     if (artista is None):
         lista = lt.newList("ARRAY_LIST")
         lt.addLast(lista, filtered)
 
         mp.put(datos, filtered['artist_id'], lista)
     else:
-        
+
         lt.addLast(artista['value'], filtered)
 
 
 def addTrack(analyzer, filtered):
-    # artist arbol -> 
+    # artist arbol ->
 
     datos = analyzer['audios']
 
     track = mp.get(datos, filtered["track_id"])
-    
+
     if (track is None):
         lista = lt.newList("ARRAY_LIST")
         lt.addLast(lista, filtered)
 
         mp.put(datos, filtered['track_id'], lista)
     else:
-        
+
         lt.addLast(track['value'], filtered)
 
 # Funciones para creacion de datos
@@ -117,11 +117,11 @@ def getCar(analyzer, car: str):
             lt.addLast(lista, audio)
 
             om.put(newTree, valor, lista)
-        
+
         else:
 
             lt.addLast(entry['value'], audio)
-    
+
     return newTree
 
 
@@ -147,7 +147,7 @@ def getValuesReq1(tree, bajo, alto):
     return suma, mapa
 
 
-def getValuesReq3(tree=None, 
+def getValuesReq3(tree=None,
                   bajoInstrumental=0.6,
                   altoInstrumental=0.9,
                   bajoTempo=40,
@@ -164,13 +164,13 @@ def getValuesReq3(tree=None,
     Returns:
         dict: Mapa (PROBING) de los tracks en los rangos elegidos
     """
-    
+
     if tree is not None:  # Si el árbol no es None
-        
+
         instrumental = om.values(tree, bajoInstrumental, altoInstrumental)
-        
+
         mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000)
-        
+
         for node in lt.iterator(instrumental):
 
             for event in lt.iterator(node):  # Cada evento contiene info del csv context
@@ -190,7 +190,59 @@ def getValuesReq3(tree=None,
 
 
 
+def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
+    """Retorna un mapa con los tracks en un rango que depende del requerimiento seleccionado.
 
+    Args:
+        tree (dict, mapa): Árbol según Energy. Defaults to None.
+        bajo1 (float): Rango inferior de la primera carcterística de contenido.
+        alto1 (float): Rango superior de la primera carcterística de contenido.
+        bajo2 (float): Rango inferior de la segunda carcterística de contenido.
+        alto2 (float): Rango superior de la segunda carcterística de contenido.
+
+    Returns:
+        dict: Mapa (PROBING) de los tracks en los rangos elegidos
+    """
+    if tree is not None:  # Si el árbol no es None
+
+        mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000)
+
+        if numReq == 2:
+
+            energy = om.values(tree, bajo1, alto1)
+
+            for node in lt.iterator(energy):
+
+                for event in lt.iterator(node):  # Cada evento contiene info del csv context
+
+                    if (event["danceability"] >= bajo2) and (event["danceability"] <= alto2):
+
+                        audio = event["track_id"]
+                        existe = mp.contains(mapa, audio)
+
+                        if (not existe):  # se usa un mapa para no repetir tracks
+                            mp.put(mapa, audio, event)
+
+        elif numReq == 3:
+
+            instrumental = om.values(tree, bajo1, alto1)
+
+            for node in lt.iterator(instrumental):
+
+                for event in lt.iterator(node):  # Cada evento contiene info del csv context
+
+                    if (event["tempo"] >= bajo2) and (event["tempo"] <= alto2):
+
+                        audio = event["track_id"]
+                        existe = mp.contains(mapa, audio)
+
+                        if (not existe):  # se usa un mapa para no repetir tracks
+                            mp.put(mapa, audio, event)
+
+        return mapa
+
+    else:
+        return None
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

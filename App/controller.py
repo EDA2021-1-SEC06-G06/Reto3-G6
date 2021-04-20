@@ -90,6 +90,21 @@ def getValuesReq1(tree, bajo, alto):
     return model.getValuesReq1(tree, bajo, alto)
 
 
+def getValuesReq2(tree, bajoEnergy, altoEnergy, bajoDance, altoDance):
+    """Retorna un mapa con los tracks en un rango de energy y danceability
+
+    Args:
+        tree (dict, mapa): Árbol según Energy. Defaults to None.
+        bajoEnergy (float): Rango inferior Energy.
+        altoEnergy (float): Rango superior Energy.
+        bajoDance (float): Rango inferior Danceability.
+        altoDance (float): Rango superior Danceability.
+
+    Returns:
+        dict: Mapa (PROBING) de los tracks en los rangos elegidos
+    """
+    return model.getValuesReq2(tree, bajoEnergy, altoEnergy, bajoDance, altoDance)
+
 
 def getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo):
     """Retorna un mapa con los tracks en un rango de instrumentalness y tempo
@@ -105,3 +120,19 @@ def getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo
         dict: Mapa (PROBING) de los tracks en los rangos elegidos
     """
     return model.getValuesReq3(tree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo)
+
+
+def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
+    """Retorna un mapa con los tracks en un rango que depende del requerimiento seleccionado.
+
+    Args:
+        tree (dict, mapa): Árbol según Energy. Defaults to None.
+        bajo1 (float): Rango inferior de la primera carcterística de contenido.
+        alto1 (float): Rango superior de la primera carcterística de contenido.
+        bajo2 (float): Rango inferior de la segunda carcterística de contenido.
+        alto2 (float): Rango superior de la segunda carcterística de contenido.
+
+    Returns:
+        dict: Mapa (PROBING) de los tracks en los rangos elegidos
+    """
+    return model.getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq)
