@@ -161,6 +161,26 @@ while True:
         printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
 
 
+
+    elif int(inputs[0]) == 5:
+        print("\n++++++ Req No. 4 results... ++++++\n")
+        newTree = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
+
+        opcion = int(input("\nIngrese (1) si desea cosultar géneros existentes o ingrese (2) si desea agregar un nuevo género:\n~"))
+
+        if opcion == 1:
+
+            genero = input("\nIngrese los generos que desea consultar, separados por comas y espacios:\n~")
+            lista = controller.genreToTempo(genero)
+            print(lista)
+
+        if opcion == 2:
+
+            genero = input("\nIngrese el nombre del género que desea registrar:\n~")
+            bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~".format(genero)))
+            altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~".format(genero)))
+
+
     else:
         sys.exit(0)
 sys.exit(0)

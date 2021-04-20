@@ -244,6 +244,50 @@ def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
     else:
         return None
 
+
+
+
+def genreToTempo(generos):
+    listaGeneros = lt.newList(datastructure="ARRAY_LIST", delimiter=", ")
+
+    lt.addLast(listaGeneros, generos)
+
+    tempos = lt.newList(datastructure="ARRAY_LIST")
+
+    for genero in lt.iterator(listaGeneros):
+
+        if genero.lower() == "reggae":
+            tempo = (60, 90)
+
+        elif genero.lower() == "down-tempo":
+            tempo = (70, 100)
+
+        elif genero.lower() == "chill-out":
+            tempo = (90, 120)
+
+        elif genero.lower() == "hip-hop":
+            tempo = (85, 115)
+
+        elif genero.lower() == "jazz and funk":
+            tempo = (120, 125)
+
+        elif genero.lower() == "pop":
+            tempo = (100, 130)
+
+        elif genero.lower() == "r&b":
+            tempo = (60, 80)
+
+        elif genero.lower() == "rock":
+            tempo = (110, 140)
+
+        elif genero.lower() == "metal":
+            tempo = (100, 160)
+
+        lt.addLast(tempos, tempo)
+
+    return tempos
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 
