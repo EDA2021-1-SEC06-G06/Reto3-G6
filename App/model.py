@@ -30,7 +30,6 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
 
 
@@ -147,48 +146,6 @@ def getValuesReq1(tree, bajo, alto):
     return suma, mapa
 
 
-def getValuesReq3(tree=None,
-                  bajoInstrumental=0.6,
-                  altoInstrumental=0.9,
-                  bajoTempo=40,
-                  altoTempo=60):
-    """Retorna un mapa con los tracks en un rango de instrumentalness y tempo
-
-    Args:
-        tree (dict, mapa): Árbol según Instrumentalness. Defaults to None.
-        bajoInstrumental (float): Rango inferior Instrumentalness. Defaults to 0.6.
-        altoInstrumental (float): Rango superior Instrumentalness. Defaults to 0.9.
-        bajoTempo (float): Rango inferior Tempo. Defaults to 40.
-        altoTempo (float): Rango superior Tempo. Defaults to 60.
-
-    Returns:
-        dict: Mapa (PROBING) de los tracks en los rangos elegidos
-    """
-
-    if tree is not None:  # Si el árbol no es None
-
-        instrumental = om.values(tree, bajoInstrumental, altoInstrumental)
-
-        mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000)
-
-        for node in lt.iterator(instrumental):
-
-            for event in lt.iterator(node):  # Cada evento contiene info del csv context
-
-                if (event["tempo"] >= 40) and (event["tempo"] <= 60):
-
-                    audio = event["track_id"]
-                    existe = mp.contains(mapa, audio)
-
-                    if (not existe):  # se usa un mapa para no repetir tracks
-                        mp.put(mapa, audio, event)
-
-        return mapa
-
-    else:
-        return None
-
-
 
 def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
     """Retorna un mapa con los tracks en un rango que depende del requerimiento seleccionado.
@@ -246,37 +203,57 @@ def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
 
 
 
+def getValuesReq4(tree):
+
+    mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000, comparefunction=cmpArtistas)
+    sumaEventos = 0
+
+    # artistas = 0
+    for node in lt.iterator(tree):
+        sumaEventos += lt.size(node)
+
+        for event in lt.iterator(node):
+            artista = event['artist_id']
+            existe = mp.contains(mapa, artista)
+
+            if (not existe):
+                mp.put(mapa, artista, None)
+
+    return sumaEventos, mapa
+
+
+
 
 def genreMap(tree):
 
     genreMap = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
 
 
-    addGenre(genreMap, "reggae", 60, 90, tree)
+    addGenre(genreMap, "reggae", 60.0, 90.0, tree)
 
     
-    addGenre(genreMap, "down-tempo", 70, 100, tree)
+    addGenre(genreMap, "down-tempo", 70.0, 100.0, tree)
     
 
-    addGenre(genreMap, "chill-out", 90, 120, tree)
+    addGenre(genreMap, "chill-out", 90.0, 120.0, tree)
     
 
-    addGenre(genreMap, "hip-hop", 85, 115, tree)
+    addGenre(genreMap, "hip-hop", 85.0, 115.0, tree)
 
 
-    addGenre(genreMap, "jazz and funk", 120, 125, tree)
+    addGenre(genreMap, "jazz and funk", 120.0, 125.0, tree)
 
 
-    addGenre(genreMap, "pop", 100, 130, tree)
+    addGenre(genreMap, "pop", 100.0, 130.0, tree)
 
 
-    addGenre(genreMap, "r&b", 60, 80, tree)
+    addGenre(genreMap, "r&b", 60.0, 80.0, tree)
     
 
-    addGenre(genreMap, "rock", 110, 140, tree)
+    addGenre(genreMap, "rock", 110.0, 140.0, tree)
     
     
-    addGenre(genreMap, "metal", 100, 160, tree)
+    addGenre(genreMap, "metal", 100.0, 160.0, tree)
 
 
     return genreMap
@@ -291,6 +268,11 @@ def addGenre(mapa, genero, bajo, alto, tree):
         'alto': alto,
         'eventos': om.values(tree, bajo, alto)
     }
+
+    numEventos, artistas = getValuesReq4(valoresKey['eventos'])
+    
+    valoresKey['eventos'] = numEventos
+    valoresKey['artistas'] = artistas
     
     mp.put(mapa, keyName, valoresKey)
 

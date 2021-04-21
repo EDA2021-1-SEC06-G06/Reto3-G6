@@ -69,6 +69,38 @@ def printReq3(mapa):
     mapa = None
 
 
+
+def printReq4(mapa, elecciones):
+
+    elecciones = elecciones.split(', ')
+
+    for genero in elecciones:
+        genero = genero.lower()
+        print("\n======{0}======".format(genero))
+        valoresLLave = mp.get(mapa, genero)['value']
+
+        if valoresLLave is not None:
+            
+            print("For {0} the tempo is between {1} and {2} BPM".format(genero, valoresLLave['bajo'], valoresLLave['alto']))
+
+            print("{0} reproductions: {1} with {2} different artists".format(genero, valoresLLave['eventos'], mp.size(valoresLLave['artistas'])))
+
+            print("----- Some artists for {0} -----".format(genero))
+
+            artistas = mp.keySet(valoresLLave['artistas'])
+            for num in range(10):
+                numRandom = randint(1, lt.size(artistas))
+
+                artist = lt.getElement(artistas, numRandom)
+
+                print("Artists {0}: {1}".format((num + 1), artist))
+
+    valoresLLave = None
+    artistas = None
+    artist = None
+
+
+
 def printGeneros(mapa):
 
     size = mp.size(mapa)
@@ -77,12 +109,12 @@ def printGeneros(mapa):
     
     posicion = 1
 
-    print("### Los géneros existentes son los siguientes ###")
+    print("\n### Los géneros existentes son los siguientes ###\n")
     while posicion <= size:
 
         llave = lt.getElement(llaves, posicion)
 
-        print("•{0}".format(llave))
+        print("•{0}\n".format(llave.upper()))
 
         posicion += 1
 
@@ -105,6 +137,9 @@ while True:
         # cont es el controlador que se usará de acá en adelante
         analyzer = controller.init()
         controller.loadEvents(analyzer)
+
+        newTree = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
+        genreMap = controller.genreMap(newTree)
 
         print("Cantidad de Eventos: {0}".format(lt.size(analyzer['eventos'])))
 
@@ -181,29 +216,55 @@ while True:
 
     elif int(inputs[0]) == 5:
         print("\n++++++ Req No. 4 results... ++++++\n")
-        newTree = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
 
-        genreMap = controller.genreMap(newTree)  # TODO: Ver si volvemos genreMap global 
 
         centinela = True
-
+        elecciones = ''
         while centinela is True:
             printGeneros(genreMap)
 
-            opcion = int(input("\n-Ingrese (1) si desea consultar los géneros existentes\n-Ingrese (2) si desea agregar un nuevo género\n-Ingrese (3) si no desea consultar más géneros\n~ "))
+            opcion = int(input("-Ingrese (1) para seleccionar los géneros a imprimir\n-Ingrese (2) si desea agregar un género\n-Ingrese (3) para imprimir los géneros seleccionados\n~ "))
 
+            
             if opcion == 1:
-                genero = input("\nIngrese los generos que desea consultar, separados por comas y espacios:\n~ ")
-                # TODO: Lista para consultar esos géneros
+                generos = input("\nIngrese los generos que desea consultar, separados por comas y espacios:\n~ ")
+                
+                if elecciones != '':
+                    elecciones = elecciones + ', ' + generos
+
+                else:
+                    elecciones = generos
                 
             elif opcion == 2:
                 genero = input("\nIngrese el nombre del género que desea registrar:\n~ ")
+
+                if elecciones != '':
+                    elecciones = elecciones + ', ' + genero.lower()
+
+                else:
+                    elecciones = genero
                 
                 bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~ ".format(genero)))
                 altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~ ".format(genero)))
                 
                 genreMap = controller.addGenre(genreMap, genero, bajoTempo, altoTempo, newTree)
 
+                print("Su género ha sido agregado, NO tiene que seleccionarlo en la opción 1")
+
+
+            elif opcion == 3:
+                print("¿Desea la información de los siguientes géneros?:")
+                print(elecciones.upper())
+
+                yesOrno = input("\n(Y) or (N)?\n~ ")
+
+                if yesOrno.lower() == 'y':
+                    
+                    print(elecciones)
+                    printReq4(genreMap, elecciones)
+                    
+                elecciones = ''
+                
             else:
 
                 centinela = False
