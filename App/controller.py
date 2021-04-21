@@ -23,6 +23,7 @@
 import config as cf
 import model
 import csv
+import datetime as dt
 
 
 """
@@ -68,11 +69,13 @@ def loadEvents(analyzer):
             "artist_id": line["artist_id"].replace(" ", ''),
             "track_id": line["track_id"],
             "user_id": line["user_id"],
-            "id": line["id"]
+            "id": line["id"],
+            "created_at": dt.datetime.strptime(line["created_at"], "%Y-%m-%d %H:%M:%S").time()
         }
         model.addEvent(analyzer, filtered)
         model.addArtist(analyzer, filtered)
         model.addTrack(analyzer, filtered)
+        model.addDate(analyzer, filtered)
     return analyzer
 
 
@@ -147,3 +150,8 @@ def genreMap(tree):
 
 def addGenre(mapa, genero, bajo, alto, tree):
     return model.addGenre(mapa, genero, bajo, alto, tree)
+
+
+def req5Generos(listaFiltroDates):
+
+    return model.req5Generos(listaFiltroDates)

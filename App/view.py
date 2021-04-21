@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 from random import randint
+import datetime as dt
 import config as cf
 import sys
 import controller
@@ -268,9 +269,29 @@ while True:
             else:
 
                 centinela = False
+    
 
 
+    elif int(inputs[0]) == 6:  # TODO: Ver qué archivo toca usar ughhhhhhhhh
+        print("\n++++++ Req No. 5 results... ++++++\n")
+        
+        bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
+        altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
+        
+        listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
 
+        mapaGenerosDates = controller.req5Generos(listaFiltroDates)
+
+        sumaaa = 0
+
+        for llave in lt.iterator(mp.keySet(mapaGenerosDates)):
+            print(llave, lt.size(mp.get(mapaGenerosDates, llave)['value']))
+            sumaaa += lt.size(mp.get(mapaGenerosDates, llave)['value'])
+    
+        print(sumaaa)
+        
+
+        
 
     else:
         sys.exit(0)

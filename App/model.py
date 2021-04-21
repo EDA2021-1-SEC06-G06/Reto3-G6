@@ -24,7 +24,7 @@
  * Dario Correal - Version inicial
  """
 
-
+import datetime as dt
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
@@ -43,6 +43,8 @@ def newAnalyzer():
     analyzer['artistas'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpArtistas)
 
     analyzer['audios'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpTrack)
+
+    analyzer['dates'] = om.newMap("RBT", cmpDates)
 
     return analyzer
 
@@ -93,6 +95,15 @@ def addTrack(analyzer, filtered):
     else:
 
         lt.addLast(track['value'], filtered)
+
+
+def addDate(analyzer, filtered):
+
+    datos = analyzer['dates']
+    valor = filtered['created_at']
+
+    om.put(datos, valor, filtered)
+
 
 # Funciones para creacion de datos
 
@@ -279,6 +290,76 @@ def addGenre(mapa, genero, bajo, alto, tree):
     return mapa
 
 
+
+def req5Generos(listaFiltrada):
+
+    mapa = {
+        "reggae": lt.newList("ARRAY_LIST"),
+        "down-tempo": lt.newList("ARRAY_LIST"),
+        "chill-out": lt.newList("ARRAY_LIST"),
+        "hip-hop": lt.newList("ARRAY_LIST"),
+        "jazz and funk": lt.newList("ARRAY_LIST"),
+        "pop": lt.newList("ARRAY_LIST"),
+        "r&b": lt.newList("ARRAY_LIST"),
+        "rock": lt.newList("ARRAY_LIST"),
+        "metal": lt.newList("ARRAY_LIST")
+    }
+
+    for track in lt.iterator(listaFiltrada):
+        
+        if track['tempo'] >= 60.0 and track['tempo'] <= 90.0:
+
+            lt.addLast(mapa['reggae'], track)
+
+
+        if track['tempo'] >= 70.0 and track['tempo'] <= 100.0:
+
+            lt.addLast(mapa['down-tempo'], track)
+
+
+        if track['tempo'] >= 90.0 and track['tempo'] <= 120.0:
+
+            lt.addLast(mapa['chill-out'], track)
+
+
+        if track['tempo'] >= 85.0 and track['tempo'] <= 115.0:
+
+            lt.addLast(mapa['hip-hop'], track)
+
+
+        if track['tempo'] >= 120.0 and track['tempo'] <= 125.0:
+
+            lt.addLast(mapa['jazz and funk'], track)
+
+        
+        if track['tempo'] >= 100.0 and track['tempo'] <= 130.0:
+
+            lt.addLast(mapa['pop'], track)
+
+        
+        if track['tempo'] >= 60.0 and track['tempo'] <= 80.0:
+
+            lt.addLast(mapa['r&b'], track)
+
+        
+        if track['tempo'] >= 110.0 and track['tempo'] <= 140.0:
+
+            lt.addLast(mapa['rock'], track)
+
+        
+        if track['tempo'] >= 100.0 and track['tempo'] <= 160.0:
+
+            lt.addLast(mapa['metal'], track)
+
+    hashMap = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
+    
+    for llave in mapa:
+
+        mp.put(hashMap, llave, mapa[llave])
+
+    mapa = None
+    return hashMap
+        
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 
@@ -310,4 +391,16 @@ def cmpCarValue(c1, c2):
         return 1
     else:
         return -1
+
+
+def cmpDates(d1, d2):
+
+    if d1 == d2:
+        return 0
+    elif d1 > d2:
+        return 1
+    else:
+        return -1
+
+
 # Funciones de ordenamiento
