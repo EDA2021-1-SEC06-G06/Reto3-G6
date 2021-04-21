@@ -138,8 +138,8 @@ while True:
         analyzer = controller.init()
         controller.loadEvents(analyzer)
 
-        newTree = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
-        genreMap = controller.genreMap(newTree)
+        newTreeReq4 = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
+        genreMap = controller.genreMap(newTreeReq4)
 
         print("Cantidad de Eventos: {0}".format(lt.size(analyzer['eventos'])))
 
@@ -225,16 +225,16 @@ while True:
 
             opcion = int(input("-Ingrese (1) para seleccionar los géneros a imprimir\n-Ingrese (2) si desea agregar un género\n-Ingrese (3) para imprimir los géneros seleccionados\n~ "))
 
-            
+
             if opcion == 1:
                 generos = input("\nIngrese los generos que desea consultar, separados por comas y espacios:\n~ ")
-                
+
                 if elecciones != '':
                     elecciones = elecciones + ', ' + generos
 
                 else:
                     elecciones = generos
-                
+
             elif opcion == 2:
                 genero = input("\nIngrese el nombre del género que desea registrar:\n~ ")
 
@@ -243,11 +243,11 @@ while True:
 
                 else:
                     elecciones = genero
-                
+
                 bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~ ".format(genero)))
                 altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~ ".format(genero)))
-                
-                genreMap = controller.addGenre(genreMap, genero, bajoTempo, altoTempo, newTree)
+
+                genreMap = controller.addGenre(genreMap, genero, bajoTempo, altoTempo, newTreeReq4)
 
                 print("Su género ha sido agregado, NO tiene que seleccionarlo en la opción 1")
 
@@ -259,12 +259,12 @@ while True:
                 yesOrno = input("\n(Y) or (N)?\n~ ")
 
                 if yesOrno.lower() == 'y':
-                    
+
                     print(elecciones)
                     printReq4(genreMap, elecciones)
-                    
+
                 elecciones = ''
-                
+
             else:
 
                 centinela = False
