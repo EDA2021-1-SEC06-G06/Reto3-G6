@@ -153,12 +153,10 @@ while True:
     elif int(inputs[0]) == 2:
         print("\n++++++ Req No. 1 results... ++++++\n")
         car = input("Ingrese la característica de contenido que desea:\n~")  # Test con 'instrumentalness'
-        # bajo = float(input("Ingrese el mínimo del rango:\n~"))
-        # alto = float(input("Ingrese el máximo del rango:\n~"))
+        bajo = float(input("Ingrese el mínimo del rango:\n~"))
+        alto = float(input("Ingrese el máximo del rango:\n~"))
 
-        car = 'instrumentalness'
-        bajo = 0.0
-        alto = 0.0
+        
         print("\nCargando datos según la característica....")
 
         newTree = controller.getCar(analyzer, car)
