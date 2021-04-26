@@ -139,6 +139,7 @@ while True:
         # cont es el controlador que se usará de acá en adelante
         analyzer = controller.init()
         controller.loadEvents(analyzer)
+        # controller.loadUserTrack(analyzer) TODO:
 
         newTreeReq4 = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
         genreMap = controller.genreMap(newTreeReq4)
@@ -275,18 +276,26 @@ while True:
         altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
         
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
-
+        
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
-
-        sumaaa = 0
-
-        for llave in lt.iterator(mp.keySet(mapaGenerosDates)):
-            print(llave, lt.size(mp.get(mapaGenerosDates, llave)['value']))
-            sumaaa += lt.size(mp.get(mapaGenerosDates, llave)['value'])
-    
-        print(sumaaa)
         
 
+        for llave in lt.iterator(mp.keySet(mapaGenerosDates)):
+
+            dic = {}
+            generosHoras = mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5)
+            for audio in lt.iterator(mp.get(mapaGenerosDates, llave)['value']):
+                
+                track = audio['track_id'] + audio['user_id'] + audio['created_at']
+
+                mp.put(generosHoras, track, )
+                if track not in dic.keys():
+                    dic[track] = 1
+                else:
+                    dic[track] += 1
+
+            print(len(dic))
+            
         
 
     else:

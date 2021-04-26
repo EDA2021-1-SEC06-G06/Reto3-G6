@@ -23,7 +23,7 @@
 import config as cf
 import model
 import csv
-
+from DISClib.ADT import map as mp
 
 
 """
@@ -80,9 +80,36 @@ def loadEvents(analyzer):
     return analyzer
 
 
+
+def loadUserTrack(analyzer):
+    userTrack = cf.data_dir + 'context_content_features-small.csv'
+    input_file = csv.DictReader(open(userTrack, encoding="utf-8"),
+                                delimiter=",")
+
+    for line in input_file:
+        filtered = {
+            'user_id': line['user_id'],
+            "track_id": line["track_id"].replace(" ", ''),
+            # "hashtag": line["hashtag"],
+            "created_at": line['created_at']
+        }
+        tempo = mp.get(analyzer['audios'], filtered['track_id'])
+        
+        if tempo is not None:
+            tempo = tempo['value']['tempo']
+
+            filtered['tempo'] = tempo
+
+        else:
+            filtered['tempo'] = None
+
+    return analyzer
+
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
 
 def getCar(analyzer, car):
 
