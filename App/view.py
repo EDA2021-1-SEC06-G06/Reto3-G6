@@ -82,7 +82,7 @@ def printReq4(mapa, elecciones):
 
         if valoresLLave is not None:
             totalSuma += mp.size(valoresLLave['numEventos'])
-            
+
             print("For {0} the tempo is between {1} and {2} BPM".format(genero, valoresLLave['bajo'], valoresLLave['alto']))
 
             print("{0} reproductions: {1} with {2} different artists".format(genero, mp.size(valoresLLave['numEventos']), mp.size(valoresLLave['artistas'])))
@@ -102,13 +102,23 @@ def printReq4(mapa, elecciones):
     artist = None
 
 
+def printReq5(mapa):
+
+    valores = controller.getValuesReq5(mapa)
+    contador = 0
+    for genero in lt.iterator(valores[0]):
+        contador += 1
+        size = mp.get(valores[1], genero)
+        print("\nTop {0}: {1} with {2} reps".format(contador, genero, size["value"]))
+
+
 
 def printGeneros(mapa):
 
     size = mp.size(mapa)
 
     llaves = mp.keySet(mapa)
-    
+
     posicion = 1
 
     print("\n### Los géneros existentes son los siguientes ###\n")
@@ -158,7 +168,7 @@ while True:
         bajo = float(input("Ingrese el mínimo del rango:\n~"))
         alto = float(input("Ingrese el máximo del rango:\n~"))
 
-        
+
         print("\nCargando datos según la característica....")
 
         newTree = controller.getCar(analyzer, car)
@@ -196,7 +206,7 @@ while True:
         print("\n++++++ Req No. 3 results... ++++++\n")
         newTree = controller.getCar(analyzer, 'instrumentalness')  # árbol según valores de "instrumentalness"
 
-        bajoInstrumental = float(input("\nIngrese el mínimo del rango para Instrumentalness:\n~")) 
+        bajoInstrumental = float(input("\nIngrese el mínimo del rango para Instrumentalness:\n~"))
         altoInstrumental = float(input("\nIngrese el máximo del rango para Instrumentalness:\n~"))
 
         bajoTempo = float(input("\nIngrese el mínimo del rango para Tempo:\n~"))
@@ -266,26 +276,21 @@ while True:
             else:
 
                 centinela = False
-    
+
 
 
     elif int(inputs[0]) == 6:  # TODO: Ver qué archivo toca usar ughhhhhhhhh
         print("\n++++++ Req No. 5 results... ++++++\n")
-        
+
         bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
         altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
-        
+
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
-        
+
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
-        
 
-        for genero5 in lt.iterator(mp.keySet(mapaGenerosDates)):
+        printReq5(mapaGenerosDates)
 
-            llaveValorGenero = mp.get(mapaGenerosDates, genero5)['value']
-
-            print(genero5, mp.size(llaveValorGenero))  #TODO: funcion de print como el PDF.
-            
 
     else:
         sys.exit(0)

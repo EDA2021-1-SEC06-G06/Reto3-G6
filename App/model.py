@@ -151,7 +151,7 @@ def getValuesReq1(tree, bajo, alto):
             newEvent = event['track_id'] + event['user_id'] + event['created_at']
 
             mp.put(reproducciones, newEvent, None)
-            
+
             artista = event['artist_id']
             existe = mp.contains(mapa, artista)
 
@@ -232,7 +232,7 @@ def getValuesReq4(tree):
 
             mp.put(reproducciones, newEvent, None)
 
-               
+
             artista = event['artist_id']
             existe = mp.contains(mapa, artista)
 
@@ -251,12 +251,12 @@ def genreMap(tree):
 
     addGenre(genreMap, "reggae", 60.0, 90.0, tree)
 
-    
+
     addGenre(genreMap, "down-tempo", 70.0, 100.0, tree)
-    
+
 
     addGenre(genreMap, "chill-out", 90.0, 120.0, tree)
-    
+
 
     addGenre(genreMap, "hip-hop", 85.0, 115.0, tree)
 
@@ -268,11 +268,11 @@ def genreMap(tree):
 
 
     addGenre(genreMap, "r&b", 60.0, 80.0, tree)
-    
+
 
     addGenre(genreMap, "rock", 110.0, 140.0, tree)
-    
-    
+
+
     addGenre(genreMap, "metal", 100.0, 160.0, tree)
 
 
@@ -290,10 +290,10 @@ def addGenre(mapa, genero, bajo, alto, tree):
     }
 
     numEventos, artistas = getValuesReq4(valoresKey['eventos'])
-    
+
     valoresKey['numEventos'] = numEventos
     valoresKey['artistas'] = artistas
-    
+
     mp.put(mapa, keyName, valoresKey)
 
     return mapa
@@ -321,7 +321,7 @@ def req5Generos(listaFiltrada):
             if track['tempo'] is not None:
                 trackName = track['track_id'] + track['user_id'] + track['created_at']
 
-                
+
                 if track['tempo'] >= 60.0 and track['tempo'] <= 90.0:
                     mp.put(mapa['reggae'], trackName, None)  # TODO: Hashtags
 
@@ -332,41 +332,77 @@ def req5Generos(listaFiltrada):
 
                 if track['tempo'] >= 90.0 and track['tempo'] <= 120.0:
                     mp.put(mapa['chill-out'], trackName, None)
-                    
+
 
                 if track['tempo'] >= 85.0 and track['tempo'] <= 115.0:
                     mp.put(mapa['hip-hop'], trackName, None)
-                    
+
 
                 if track['tempo'] >= 120.0 and track['tempo'] <= 125.0:
                     mp.put(mapa['jazz and funk'], trackName, None)
-                    
-                
+
+
                 if track['tempo'] >= 100.0 and track['tempo'] <= 130.0:
                     mp.put(mapa['pop'], trackName, None)
-                    
-                
+
+
                 if track['tempo'] >= 60.0 and track['tempo'] <= 80.0:
                     mp.put(mapa['r&b'], trackName, None)
-                    
-                
+
+
                 if track['tempo'] >= 110.0 and track['tempo'] <= 140.0:
                     mp.put(mapa['rock'], trackName, None)
-                    
-                
+
+
                 if track['tempo'] >= 100.0 and track['tempo'] <= 160.0:
                     mp.put(mapa['metal'], trackName, None)
 
     hashMap = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
-    
+
     for llave in mapa:
 
         mp.put(hashMap, llave, mapa[llave])
 
     mapa = None
     return hashMap
-        
+
+
+def getValuesReq5(mapa):
+
+    generosMayores = lt.newList(datastructure="ARRAY_LIST")
+
+    resultados = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
+
+    contador = 0
+
+    while contador < 9:
+
+        mayor = 0
+
+        generoMayor = None
+
+        for genero5 in lt.iterator(mp.keySet(mapa)):
+
+            llaveValorGenero = mp.get(mapa, genero5)['value']
+
+            if (mp.size(llaveValorGenero) > mayor) and (not lt.isPresent(generosMayores, genero5)):
+
+                mayor = mp.size(llaveValorGenero)
+
+                generoMayor = genero5
+
+        lt.addLast(generosMayores, generoMayor)
+
+        mp.put(resultados, generoMayor, mayor)
+
+        contador += 1
+
+    return generosMayores, resultados
+
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
+
 
 
 def cmpArtistas(artist1, artist2):

@@ -72,7 +72,7 @@ def loadEvents(analyzer):
             "id": line["id"],
             "created_at": line["created_at"]  # dt.datetime.strptime(line["created_at"], "%Y-%m-%d %H:%M:%S").time()
         }
-        
+
         model.addEvent(analyzer, filtered)
         model.addArtist(analyzer, filtered)
         model.addTrack(analyzer, filtered)
@@ -94,7 +94,7 @@ def loadUserTrack(analyzer):
             "created_at": line['created_at']
         }
         tempo = mp.get(analyzer['audios'], filtered['track_id'])
-        
+
         if tempo is not None:
             tempo = tempo['value']['tempo']
 
@@ -183,3 +183,8 @@ def addGenre(mapa, genero, bajo, alto, tree):
 def req5Generos(listaFiltroDates):
 
     return model.req5Generos(listaFiltroDates)
+
+
+def getValuesReq5(mapa):
+
+    return model.getValuesReq5(mapa)
