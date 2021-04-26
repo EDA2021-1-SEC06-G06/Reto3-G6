@@ -100,8 +100,8 @@ def addTrack(analyzer, filtered):
 def addDate(analyzer, filtered):
 
     datos = analyzer['dates']
-    valor = filtered['created_at']
-
+    valor = dt.datetime.strptime(filtered['created_at'], "%Y-%m-%d %H:%M:%S").time()
+    
     om.put(datos, valor, filtered)
 
 
@@ -224,14 +224,14 @@ def getValuesReq4(tree):
 
     # artistas = 0
     for node in lt.iterator(tree):
-        
+
 
         for event in lt.iterator(node):
-            newEvent = event['track_id'] + event['user_id'] + event['created_at']  #.strftime("%m/%d/%Y %H:%M:%S")
+            newEvent = event['track_id'] + event['user_id'] + event['created_at']
 
             mp.put(reproducciones, newEvent, None)
 
-                
+               
             artista = event['artist_id']
             existe = mp.contains(mapa, artista)
 
