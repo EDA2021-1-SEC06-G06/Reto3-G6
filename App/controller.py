@@ -70,8 +70,9 @@ def loadEvents(analyzer):
             "track_id": line["track_id"],
             "user_id": line["user_id"],
             "id": line["id"],
-            "created_at": dt.datetime.strptime(line["created_at"], "%Y-%m-%d %H:%M:%S").time()
+            "created_at": line["created_at"]  # dt.datetime.strptime(line["created_at"], "%Y-%m-%d %H:%M:%S").time()
         }
+        
         model.addEvent(analyzer, filtered)
         model.addArtist(analyzer, filtered)
         model.addTrack(analyzer, filtered)

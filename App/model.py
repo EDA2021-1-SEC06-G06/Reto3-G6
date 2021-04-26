@@ -143,16 +143,13 @@ def getValuesReq1(tree, bajo, alto):
     mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000, comparefunction=cmpArtistas)
     reproducciones = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000,)
 
-    # artistas = 0
+
     for node in lt.iterator(total):
 
         for event in lt.iterator(node):
-            newEvent = event['track_id'] + event['user_id'] + event['created_at'].strftime("%H:%M:%S")
+            newEvent = event['track_id'] + event['user_id'] + event['created_at']
 
-            existeEvent = mp.contains(reproducciones, newEvent)
-
-            if (not existeEvent):
-                mp.put(reproducciones, newEvent, None)
+            mp.put(reproducciones, newEvent, None)
             
             artista = event['artist_id']
             existe = mp.contains(mapa, artista)
@@ -222,21 +219,26 @@ def getValuesReq2and3(tree, bajo1, alto1, bajo2, alto2, numReq):
 
 def getValuesReq4(tree):
 
-    mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000, comparefunction=cmpArtistas)
-    sumaEventos = 0
+    mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=50000, comparefunction=cmpArtistas)
+    reproducciones = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=100000)
 
     # artistas = 0
     for node in lt.iterator(tree):
-        sumaEventos += lt.size(node)
+        
 
         for event in lt.iterator(node):
+            newEvent = event['track_id'] + event['user_id'] + event['created_at']  #.strftime("%m/%d/%Y %H:%M:%S")
+
+            mp.put(reproducciones, newEvent, None)
+
+                
             artista = event['artist_id']
             existe = mp.contains(mapa, artista)
 
             if (not existe):
                 mp.put(mapa, artista, None)
 
-    return sumaEventos, mapa
+    return reproducciones, mapa
 
 
 
@@ -288,7 +290,7 @@ def addGenre(mapa, genero, bajo, alto, tree):
 
     numEventos, artistas = getValuesReq4(valoresKey['eventos'])
     
-    valoresKey['eventos'] = numEventos
+    valoresKey['numEventos'] = numEventos
     valoresKey['artistas'] = artistas
     
     mp.put(mapa, keyName, valoresKey)

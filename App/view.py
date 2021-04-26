@@ -74,17 +74,18 @@ def printReq3(mapa):
 def printReq4(mapa, elecciones):
 
     elecciones = elecciones.split(', ')
-
+    totalSuma = 0
     for genero in elecciones:
         genero = genero.lower()
         print("\n======{0}======".format(genero))
         valoresLLave = mp.get(mapa, genero)['value']
 
         if valoresLLave is not None:
+            totalSuma += mp.size(valoresLLave['numEventos'])
             
             print("For {0} the tempo is between {1} and {2} BPM".format(genero, valoresLLave['bajo'], valoresLLave['alto']))
 
-            print("{0} reproductions: {1} with {2} different artists".format(genero, valoresLLave['eventos'], mp.size(valoresLLave['artistas'])))
+            print("{0} reproductions: {1} with {2} different artists".format(genero, mp.size(valoresLLave['numEventos']), mp.size(valoresLLave['artistas'])))
 
             print("----- Some artists for {0} -----".format(genero))
 
@@ -95,7 +96,7 @@ def printReq4(mapa, elecciones):
                 artist = lt.getElement(artistas, numRandom)
 
                 print("Artists {0}: {1}".format((num + 1), artist))
-
+    print("Total of reproductions: {0}".format(totalSuma))
     valoresLLave = None
     artistas = None
     artist = None
