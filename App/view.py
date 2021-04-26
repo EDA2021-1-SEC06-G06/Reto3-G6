@@ -280,23 +280,12 @@ while True:
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
         
 
-        for llave in lt.iterator(mp.keySet(mapaGenerosDates)):
+        for genero5 in lt.iterator(mp.keySet(mapaGenerosDates)):
 
-            dic = {}
-            generosHoras = mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5)
-            for audio in lt.iterator(mp.get(mapaGenerosDates, llave)['value']):
-                
-                track = audio['track_id'] + audio['user_id'] + audio['created_at']
+            llaveValorGenero = mp.get(mapaGenerosDates, genero5)['value']
 
-                mp.put(generosHoras, track, )
-                if track not in dic.keys():
-                    dic[track] = 1
-                else:
-                    dic[track] += 1
-
-            print(len(dic))
+            print(genero5, mp.size(llaveValorGenero))  #TODO: funcion de print como el PDF.
             
-        
 
     else:
         sys.exit(0)

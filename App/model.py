@@ -303,15 +303,15 @@ def addGenre(mapa, genero, bajo, alto, tree):
 def req5Generos(listaFiltrada):
 
     mapa = {
-        "reggae": lt.newList("ARRAY_LIST"),
-        "down-tempo": lt.newList("ARRAY_LIST"),
-        "chill-out": lt.newList("ARRAY_LIST"),
-        "hip-hop": lt.newList("ARRAY_LIST"),
-        "jazz and funk": lt.newList("ARRAY_LIST"),
-        "pop": lt.newList("ARRAY_LIST"),
-        "r&b": lt.newList("ARRAY_LIST"),
-        "rock": lt.newList("ARRAY_LIST"),
-        "metal": lt.newList("ARRAY_LIST")
+        "reggae": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "down-tempo": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "chill-out": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "hip-hop": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "jazz and funk": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "pop": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "r&b": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "rock": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5),
+        "metal": mp.newMap(maptype="PROBING", numelements=50001, loadfactor=0.5)
     }
 
     for nodo in lt.iterator(listaFiltrada):
@@ -319,50 +319,43 @@ def req5Generos(listaFiltrada):
         for track in lt.iterator(nodo):
 
             if track['tempo'] is not None:
+                trackName = track['track_id'] + track['user_id'] + track['created_at']
+
                 
                 if track['tempo'] >= 60.0 and track['tempo'] <= 90.0:
-
-                    lt.addLast(mapa['reggae'], track)
+                    mp.put(mapa['reggae'], trackName, None)  # TODO: Hashtags
 
 
                 if track['tempo'] >= 70.0 and track['tempo'] <= 100.0:
-
-                    lt.addLast(mapa['down-tempo'], track)
+                    mp.put(mapa['down-tempo'], trackName, None)
 
 
                 if track['tempo'] >= 90.0 and track['tempo'] <= 120.0:
-
-                    lt.addLast(mapa['chill-out'], track)
-
+                    mp.put(mapa['chill-out'], trackName, None)
+                    
 
                 if track['tempo'] >= 85.0 and track['tempo'] <= 115.0:
-
-                    lt.addLast(mapa['hip-hop'], track)
-
+                    mp.put(mapa['hip-hop'], trackName, None)
+                    
 
                 if track['tempo'] >= 120.0 and track['tempo'] <= 125.0:
-
-                    lt.addLast(mapa['jazz and funk'], track)
-
+                    mp.put(mapa['jazz and funk'], trackName, None)
+                    
                 
                 if track['tempo'] >= 100.0 and track['tempo'] <= 130.0:
-
-                    lt.addLast(mapa['pop'], track)
-
+                    mp.put(mapa['pop'], trackName, None)
+                    
                 
                 if track['tempo'] >= 60.0 and track['tempo'] <= 80.0:
-
-                    lt.addLast(mapa['r&b'], track)
-
+                    mp.put(mapa['r&b'], trackName, None)
+                    
                 
                 if track['tempo'] >= 110.0 and track['tempo'] <= 140.0:
-
-                    lt.addLast(mapa['rock'], track)
-
+                    mp.put(mapa['rock'], trackName, None)
+                    
                 
                 if track['tempo'] >= 100.0 and track['tempo'] <= 160.0:
-
-                    lt.addLast(mapa['metal'], track)
+                    mp.put(mapa['metal'], trackName, None)
 
     hashMap = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
     
