@@ -141,20 +141,26 @@ def getValuesReq1(tree, bajo, alto):
     total = om.values(tree, bajo, alto)
 
     mapa = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000, comparefunction=cmpArtistas)
-    suma = 0
+    reproducciones = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=8000,)
 
     # artistas = 0
     for node in lt.iterator(total):
-        suma += lt.size(node)
 
         for event in lt.iterator(node):
+            newEvent = event['track_id'] + event['user_id'] + event['created_at'].strftime("%H:%M:%S")
+
+            existeEvent = mp.contains(reproducciones, newEvent)
+
+            if (not existeEvent):
+                mp.put(reproducciones, newEvent, None)
+            
             artista = event['artist_id']
             existe = mp.contains(mapa, artista)
 
             if (not existe):
                 mp.put(mapa, artista, None)
 
-    return suma, mapa
+    return reproducciones, mapa
 
 
 

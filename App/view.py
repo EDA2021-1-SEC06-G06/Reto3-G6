@@ -161,12 +161,9 @@ while True:
 
         newTree = controller.getCar(analyzer, car)
 
-        print("\nAltura del árbol de la característica: {0}".format(om.height(newTree)))
-        print("\nCantidad de valores (Nodos) en el árbol: {0}".format(om.size(newTree)))
-
         total, mapa = controller.getValuesReq1(newTree, bajo, alto)
 
-        print("\nTotal de reproducción: {0}\n\nTotal de artistas únicos: {1}\n".format(total, mp.size(mapa)))
+        print("\nTotal de reproducción: {0}\n\nTotal de artistas únicos: {1}\n".format(mp.size(total), mp.size(mapa)))
 
         mapa = None
         newTree = None  # Espacio en Memoria
