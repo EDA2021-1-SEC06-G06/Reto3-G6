@@ -105,11 +105,16 @@ def printReq4(mapa, elecciones):
 def printReq5(mapa):
 
     valores = controller.getValuesReq5(mapa)
+    genero1 = lt.getElement(valores[0], 1)
     contador = 0
     for genero in lt.iterator(valores[0]):
         contador += 1
         size = mp.get(valores[1], genero)
         print("\nTop {0}: {1} with {2} reps".format(contador, genero, size["value"]))
+
+    return genero1
+
+
 
 
 
@@ -132,7 +137,8 @@ def printGeneros(mapa):
 
 
 
-catalog = None
+default_limit = 1000
+sys.setrecursionlimit(default_limit * 10)
 
 """
 Menu principal
@@ -286,10 +292,25 @@ while True:
         altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
 
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
-
+        # listaUserDates = om.values(analyzer['dates_user'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
+        
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
+        # mapaUserDates = controller.req5Generos(listaUserDates)
 
-        printReq5(mapaGenerosDates)
+        genero1 = printReq5(mapaGenerosDates)
+
+        mapaGenero1 = mp.get(mapaGenerosDates, genero1)['value']  # mapa
+
+        mapaUnicos = mp.newMap(numelements=9973, maptype="PROBING", loadfactor=0.5)
+        for eventoUnico in lt.iterator(mp.keySet(mapaGenero1)):
+
+            evento = mp.get(mapaGenero1, eventoUnico)['value']
+            
+            if mp.get(mapaUnicos, evento['track_id']) is None:  # TODO: Ver cómo filtramos esto.
+                mp.put(mapaUnicos, evento['track_id'], None)
+
+        print(mp.size(mapaUnicos))
+
 
 
     else:

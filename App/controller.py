@@ -82,7 +82,7 @@ def loadEvents(analyzer):
 
 
 def loadUserTrack(analyzer):
-    userTrack = cf.data_dir + 'context_content_features-small.csv'
+    userTrack = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
     input_file = csv.DictReader(open(userTrack, encoding="utf-8"),
                                 delimiter=",")
 
@@ -90,7 +90,7 @@ def loadUserTrack(analyzer):
         filtered = {
             'user_id': line['user_id'],
             "track_id": line["track_id"].replace(" ", ''),
-            # "hashtag": line["hashtag"],
+            "hashtag": line['hashtag'],
             "created_at": line['created_at']
         }
         tempo = mp.get(analyzer['audios'], filtered['track_id'])
@@ -102,7 +102,7 @@ def loadUserTrack(analyzer):
 
         else:
             filtered['tempo'] = None
-
+        model.addDateUser(analyzer, filtered)
     return analyzer
 
 

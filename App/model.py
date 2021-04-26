@@ -46,6 +46,8 @@ def newAnalyzer():
 
     analyzer['dates'] = om.newMap("RBT", cmpDates)
 
+    analyzer['dates_user'] = om.newMap("RBT", cmpDates)
+    
     return analyzer
 
 
@@ -105,6 +107,22 @@ def addDate(analyzer, filtered):
 
         lt.addLast(dateList, filtered)
 
+
+
+def addDateUser(analyzer, filtered):
+
+    datos = analyzer['dates_user']
+    valor = dt.datetime.strptime(filtered["created_at"], "%Y-%m-%d %H:%M:%S").time()
+
+    entry = om.get(datos, valor)
+    if entry is None:
+        lista = lt.newList("ARRAY_LIST")
+        lt.addLast(lista, filtered)
+        om.put(datos, valor, lista)
+    else:
+        dateList = me.getValue(entry)
+
+        lt.addLast(dateList, filtered)
 
 # Funciones para creacion de datos
 
@@ -323,39 +341,39 @@ def req5Generos(listaFiltrada):
 
 
                 if track['tempo'] >= 60.0 and track['tempo'] <= 90.0:
-                    mp.put(mapa['reggae'], trackName, None)  # TODO: Hashtags
+                    mp.put(mapa['reggae'], trackName, track)  # TODO: Hashtags
 
 
                 if track['tempo'] >= 70.0 and track['tempo'] <= 100.0:
-                    mp.put(mapa['down-tempo'], trackName, None)
+                    mp.put(mapa['down-tempo'], trackName, track)
 
 
                 if track['tempo'] >= 90.0 and track['tempo'] <= 120.0:
-                    mp.put(mapa['chill-out'], trackName, None)
+                    mp.put(mapa['chill-out'], trackName, track)
 
 
                 if track['tempo'] >= 85.0 and track['tempo'] <= 115.0:
-                    mp.put(mapa['hip-hop'], trackName, None)
+                    mp.put(mapa['hip-hop'], trackName, track)
 
 
                 if track['tempo'] >= 120.0 and track['tempo'] <= 125.0:
-                    mp.put(mapa['jazz and funk'], trackName, None)
+                    mp.put(mapa['jazz and funk'], trackName, track)
 
 
                 if track['tempo'] >= 100.0 and track['tempo'] <= 130.0:
-                    mp.put(mapa['pop'], trackName, None)
+                    mp.put(mapa['pop'], trackName, track)
 
 
                 if track['tempo'] >= 60.0 and track['tempo'] <= 80.0:
-                    mp.put(mapa['r&b'], trackName, None)
+                    mp.put(mapa['r&b'], trackName, track)
 
 
                 if track['tempo'] >= 110.0 and track['tempo'] <= 140.0:
-                    mp.put(mapa['rock'], trackName, None)
+                    mp.put(mapa['rock'], trackName, track)
 
 
                 if track['tempo'] >= 100.0 and track['tempo'] <= 160.0:
-                    mp.put(mapa['metal'], trackName, None)
+                    mp.put(mapa['metal'], trackName, track)
 
     hashMap = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
 
@@ -395,7 +413,7 @@ def getValuesReq5(mapa):
 
         mp.put(resultados, generoMayor, mayor)
 
-        mp.remove(mapa, generoMayor)
+        # mp.remove(mapa, generoMayor)
 
         contador += 1
 
