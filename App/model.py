@@ -395,6 +395,8 @@ def getValuesReq5(mapa):
 
         mp.put(resultados, generoMayor, mayor)
 
+        mp.remove(mapa, generoMayor)
+
         contador += 1
 
     return generosMayores, resultados
