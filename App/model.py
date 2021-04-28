@@ -26,6 +26,7 @@
 
 import datetime as dt
 import config as cf
+from DISClib.Algorithms.Sorting import mergesort
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
@@ -47,7 +48,8 @@ def newAnalyzer():
     analyzer['dates'] = om.newMap("RBT", cmpDates)
 
     analyzer['mapa_track_hashtag'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpTrack)
-    
+
+    analyzer['unique_dates'] = om.newMap("RBT", cmpDates)
     return analyzer
 
 
@@ -108,25 +110,47 @@ def addDate(analyzer, filtered):
         lt.addLast(dateList, filtered)
 
 
+def addUniqueDates(analyzer, filtered):
 
-def addTrackHashtags(analyzer, filtered):
+    datos = analyzer['unique_dates']
+    valor = dt.datetime.strptime(filtered["created_at"], "%Y-%m-%d %H:%M:%S").time()
+
+    entry = om.get(datos, valor)
+    if entry is None:
+        lista = lt.newList("ARRAY_LIST")
+        lt.addLast(lista, filtered)
+        om.put(datos, valor, lista)
+    else:
+        dateList = me.getValue(entry)
+
+        lt.addLast(dateList, filtered)
+
+
+def addTrackHashtags(analyzer, mapaHoras):
 
     datos = analyzer['mapa_track_hashtag']
 
-    track = mp.get(datos, filtered["track_id"])
 
-    if (track is None):
+    for track in lt.iterator(mp.keySet(mapaHoras)):
 
-        lista = lt.newList("ARRAY_LIST")
-        lt.addLast(lista, filtered['hashtag'])
-        mp.put(datos, filtered['track_id'], lista)
-    else:
+        filtered = mp.get(mapaHoras, track)['value']
+        
+        track = mp.get(datos, filtered["track_id"])
 
-        lista = track['value']
+        
 
-        if lt.isPresent(lista, filtered['hashtag']) == 0:
+        if (track is None):
+
+            lista = lt.newList("ARRAY_LIST")
             lt.addLast(lista, filtered['hashtag'])
-    
+            mp.put(datos, filtered['track_id'], lista)
+        else:
+
+            lista = track['value']
+
+            if lt.isPresent(lista, filtered['hashtag']) == 0:
+                lt.addLast(lista, filtered['hashtag'])
+        
 
 # Funciones para creacion de datos
 
@@ -428,6 +452,7 @@ def getValuesReq5(mapa):
 def req5UniqueTracks(analyzer, mapaGenero1):
 
     mapaUnicos = mp.newMap(numelements=9973, maptype="PROBING", loadfactor=0.5)
+    
     for eventoUnico in lt.iterator(mp.keySet(mapaGenero1)):
 
         evento = mp.get(mapaGenero1, eventoUnico)['value']
@@ -442,7 +467,14 @@ def req5UniqueTracks(analyzer, mapaGenero1):
             else:
                 mp.put(mapaUnicos, evento['track_id'], 0)
 
-    return mapaUnicos
+    newList = lt.newList("ARRAY_LIST")
+
+    for eventoUnico in lt.iterator(mp.keySet(mapaUnicos)):
+        evento = {'track_id': eventoUnico, 'hashtags': mp.get(mapaUnicos, eventoUnico)['value']}
+
+        lt.addLast(newList, evento)
+        
+    return mapaUnicos, newList
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -488,4 +520,17 @@ def cmpDates(d1, d2):
         return -1
 
 
+def cmpNumHashtags(track1, track2):
+    return lt.size(track1['hashtags']) > lt.size(track2['hashtags'])
+
 # Funciones de ordenamiento
+
+
+
+def sortNumHashtags(uniqueTracksList):
+    sub_list = lt.subList(uniqueTracksList, 1, lt.size(uniqueTracksList))
+    sub_list = sub_list.copy()
+
+    sorted_list = mergesort.sort(sub_list, cmpNumHashtags)
+
+    return sorted_list

@@ -292,17 +292,36 @@ while True:
         altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
 
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
+        filtroUniqueDates = om.values(analyzer['unique_dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
         
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
+        mapaUniqueDates = controller.req5Generos(filtroUniqueDates)
 
         genero1 = printReq5(mapaGenerosDates)
+        
+        mapaUniqueGenero1 = mp.get(mapaUniqueDates, genero1)['value']
+
+        controller.addTrackHashtags(analyzer, mapaUniqueGenero1)
+        
+        
 
         mapaGenero1 = mp.get(mapaGenerosDates, genero1)['value']  # mapa
 
-        genero1UniqueTracks = controller.req5UniqueTracks(analyzer, mapaGenero1)
+        genero1UniqueTracks, listaUnicos = controller.req5UniqueTracks(analyzer, mapaGenero1)
+
+        sorted_list = controller.sortNumHashtags(listaUnicos)
 
 
-        print(mp.size(genero1UniqueTracks))
+
+        iterador = 1
+
+        while iterador <= 10:
+
+            track = lt.getElement(sorted_list, iterador)
+
+            print("TOP {0} track: {1} with {2} hashtags".format(iterador, track['track_id'], lt.size(track['hashtags'])))
+
+            iterador += 1
 
 
 

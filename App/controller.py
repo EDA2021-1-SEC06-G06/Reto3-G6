@@ -102,8 +102,9 @@ def loadUserTrack(analyzer):
 
         else:
             filtered['tempo'] = None
+
+        model.addUniqueDates(analyzer, filtered)
         
-        model.addTrackHashtags(analyzer, filtered)
     return analyzer
 
 
@@ -194,3 +195,13 @@ def getValuesReq5(mapa):
 def req5UniqueTracks(analyzer, mapaGenero1):
 
     return model.req5UniqueTracks(analyzer, mapaGenero1)
+
+
+def sortNumHashtags(uniqueTracksList):
+
+    return model.sortNumHashtags(uniqueTracksList)
+
+
+def addTrackHashtags(analyzer, mapaHoras):
+
+    model.addTrackHashtags(analyzer, mapaHoras)
