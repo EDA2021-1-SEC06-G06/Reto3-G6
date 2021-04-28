@@ -20,6 +20,10 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 from random import randint
+# INICIO
+import tracemalloc
+import time
+# FIN
 import datetime as dt
 import config as cf
 import sys
@@ -160,6 +164,40 @@ def printGeneros(mapa):
         posicion += 1
 
 
+# Funciones para contar tiempo y memoria:
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter() * 1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory / 1024.0
+    return delta_memory
+
+# Final de las funciones para borrar despues.
+
+
 
 default_limit = 1000
 sys.setrecursionlimit(default_limit * 10)
@@ -176,6 +214,20 @@ while True:
     if int(inputs[0]) == 1:
 
         print("Cargando información de los archivos ....")
+
+        # INICIO
+        # respuesta por defecto
+        delta_time = -1.0
+        delta_memory = -1.0
+
+        # inicializa el processo para medir memoria
+        tracemalloc.start()
+
+        # toma de tiempo y memoria al inicio del proceso
+        start_time = getTime()
+        start_memory = getMemory()
+        # FIN
+
         # cont es el controlador que se usará de acá en adelante
         analyzer = controller.init()
         controller.loadEvents(analyzer)
@@ -184,11 +236,29 @@ while True:
         newTreeReq4 = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
         genreMap = controller.genreMap(newTreeReq4)
 
+        # INICIO
+        # toma de tiempo y memoria al final del proceso
+        stop_memory = getMemory()
+        stop_time = getTime()
+
+        # finaliza el procesos para medir memoria
+        tracemalloc.stop()
+
+        # calculando la diferencia de tiempo y memoria
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+
+        # FIN
+
         print("Cantidad de Eventos: {0}".format(lt.size(analyzer['eventos'])))
 
         print("Cantidad de Artistas: {0}".format(mp.size(analyzer['artistas'])))
 
         print("Cantidad de Tracks: {0}".format(mp.size(analyzer['audios'])))
+
+        # INICIO
+        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
+        # FIN
 
 
 
@@ -198,14 +268,44 @@ while True:
         bajo = float(input("Ingrese el mínimo del rango:\n~"))
         alto = float(input("Ingrese el máximo del rango:\n~"))
 
-
         print("\nCargando datos según la característica....")
+
+        # INICIO
+        # respuesta por defecto
+        delta_time = -1.0
+        delta_memory = -1.0
+
+        # inicializa el processo para medir memoria
+        tracemalloc.start()
+
+        # toma de tiempo y memoria al inicio del proceso
+        start_time = getTime()
+        start_memory = getMemory()
+        # FIN
 
         newTree = controller.getCar(analyzer, car)
 
         total, mapa = controller.getValuesReq1(newTree, bajo, alto)
 
+        # INICIO
+        # toma de tiempo y memoria al final del proceso
+        stop_memory = getMemory()
+        stop_time = getTime()
+
+        # finaliza el procesos para medir memoria
+        tracemalloc.stop()
+
+        # calculando la diferencia de tiempo y memoria
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+
+        # FIN
+
         print("\nTotal de reproducción: {0}\n\nTotal de artistas únicos: {1}\n".format(mp.size(total), mp.size(mapa)))
+
+        # INICIO
+        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
+        # FIN
 
         mapa = None
         newTree = None  # Espacio en Memoria
@@ -214,7 +314,6 @@ while True:
 
     elif int(inputs[0]) == 3:
         print("\n++++++ Req No. 2 results... ++++++\n")
-        newTree = controller.getCar(analyzer, 'energy')  # árbol según valores de "energy"
 
         bajoEnergy = float(input("\nIngrese el mínimo del rango para Energía:\n~"))
         altoEnergy = float(input("\nIngrese el máximo del rango para Energía:\n~"))
@@ -222,19 +321,51 @@ while True:
         bajoDance = float(input("\nIngrese el mínimo del rango para Danceability:\n~"))
         altoDance = float(input("\nIngrese el máximo del rango para Danceability:\n~"))
 
+        # INICIO
+        # respuesta por defecto
+        delta_time = -1.0
+        delta_memory = -1.0
+
+        # inicializa el processo para medir memoria
+        tracemalloc.start()
+
+        # toma de tiempo y memoria al inicio del proceso
+        start_time = getTime()
+        start_memory = getMemory()
+        # FIN
+
+        newTree = controller.getCar(analyzer, 'energy')  # árbol según valores de "energy"
+
         mapaVideosRango = controller.getValuesReq2and3(newTree, bajoEnergy, altoEnergy, bajoDance, altoDance, 2)
         # ^^ un mapa con los vídeos dentro del rango
+
+        # INICIO
+        # toma de tiempo y memoria al final del proceso
+        stop_memory = getMemory()
+        stop_time = getTime()
+
+        # finaliza el procesos para medir memoria
+        tracemalloc.stop()
+
+        # calculando la diferencia de tiempo y memoria
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+
+        # FIN
 
         print("\nEnergy is between {0} and {1}\n".format(bajoEnergy, altoEnergy))
         print("Tempo is between {0} and {1}\n".format(bajoDance, altoDance))
 
         printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
 
+        # INICIO
+        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
+        # FIN
+
 
 
     elif int(inputs[0]) == 4:
         print("\n++++++ Req No. 3 results... ++++++\n")
-        newTree = controller.getCar(analyzer, 'instrumentalness')  # árbol según valores de "instrumentalness"
 
         bajoInstrumental = float(input("\nIngrese el mínimo del rango para Instrumentalness:\n~"))
         altoInstrumental = float(input("\nIngrese el máximo del rango para Instrumentalness:\n~"))
@@ -242,13 +373,49 @@ while True:
         bajoTempo = float(input("\nIngrese el mínimo del rango para Tempo:\n~"))
         altoTempo = float(input("\nIngrese el máximo del rango para Tempo:\n~"))
 
+        # INICIO
+        # respuesta por defecto
+        delta_time = -1.0
+        delta_memory = -1.0
+
+        # inicializa el processo para medir memoria
+        tracemalloc.start()
+
+        # toma de tiempo y memoria al inicio del proceso
+        start_time = getTime()
+        start_memory = getMemory()
+        # FIN
+
+        newTree = controller.getCar(analyzer, 'instrumentalness')  # árbol según valores de "instrumentalness"
+
         mapaVideosRango = controller.getValuesReq2and3(newTree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo, 3)
         # ^^ un mapa con los vídeos dentro del rango
+
+        # INICIO
+        # toma de tiempo y memoria al final del proceso
+        stop_memory = getMemory()
+        stop_time = getTime()
+
+        # finaliza el procesos para medir memoria
+        tracemalloc.stop()
+
+        # calculando la diferencia de tiempo y memoria
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+
+        # FIN
+
+        print("\nEnergy is between {0} and {1}\n".format(bajoEnergy, altoEnergy))
+        print("Tempo is between {0} and {1}\n".format(bajoDance, altoDance))
 
         print("\nInstrumentalness is between {0} and {1}\n".format(bajoInstrumental, altoInstrumental))
         print("Tempo is between {0} and {1}\n".format(bajoTempo, altoTempo))
 
         printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
+
+        # INICIO
+        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
+        # FIN
 
 
 
@@ -285,9 +452,40 @@ while True:
                 bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~ ".format(genero)))
                 altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~ ".format(genero)))
 
+                # INICIO
+                # respuesta por defecto
+                delta_time = -1.0
+                delta_memory = -1.0
+
+                # inicializa el processo para medir memoria
+                tracemalloc.start()
+
+                # toma de tiempo y memoria al inicio del proceso
+                start_time = getTime()
+                start_memory = getMemory()
+                # FIN
+
                 genreMap = controller.addGenre(genreMap, genero, bajoTempo, altoTempo, newTreeReq4)
 
+                # INICIO
+                # toma de tiempo y memoria al final del proceso
+                stop_memory = getMemory()
+                stop_time = getTime()
+
+                # finaliza el procesos para medir memoria
+                tracemalloc.stop()
+
+                # calculando la diferencia de tiempo y memoria
+                delta_time = stop_time - start_time
+                delta_memory = deltaMemory(start_memory, stop_memory)
+
+                # FIN
+
                 print("Su género ha sido agregado, NO tiene que seleccionarlo en la opción 1")
+
+                # INICIO
+                print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
+                # FIN
 
 
             elif opcion == 3:
@@ -299,7 +497,38 @@ while True:
                 if yesOrno.lower() == 'y':
 
                     print(elecciones)
+                    # INICIO
+                    # respuesta por defecto
+                    delta_time = -1.0
+                    delta_memory = -1.0
+
+                    # inicializa el processo para medir memoria
+                    tracemalloc.start()
+
+                    # toma de tiempo y memoria al inicio del proceso
+                    start_time = getTime()
+                    start_memory = getMemory()
+                    # FIN
+
                     printReq4(genreMap, elecciones)
+
+                    # INICIO
+                    # toma de tiempo y memoria al final del proceso
+                    stop_memory = getMemory()
+                    stop_time = getTime()
+
+                    # finaliza el procesos para medir memoria
+                    tracemalloc.stop()
+
+                    # calculando la diferencia de tiempo y memoria
+                    delta_time = stop_time - start_time
+                    delta_memory = deltaMemory(start_memory, stop_memory)
+
+                    # FIN
+
+                    # INICIO
+                    print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
+                    # FIN
 
                 elecciones = ''
 
@@ -317,17 +546,17 @@ while True:
 
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
         filtroUniqueDates = om.values(analyzer['unique_dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
-        
+
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
         mapaUniqueDates = controller.req5Generos(filtroUniqueDates)  # user csv
 
         generoMasReps = printReq5(mapaGenerosDates, bajoTime, altoTime)  # tiene como llaves 'genero' y 'mapa'
-        
+
         mapaUniqueGenero1 = mp.get(mapaUniqueDates, generoMasReps['genero'])['value']  # user csv
 
         controller.addTrackHashtags(analyzer, mapaUniqueGenero1)
-        
-        
+
+
 
         mapaGenero1 = generoMasReps['mapa']
 
