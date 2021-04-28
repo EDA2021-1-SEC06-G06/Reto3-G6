@@ -417,35 +417,18 @@ def getValuesReq5(mapa):
 
     generosMayores = lt.newList(datastructure="ARRAY_LIST")
 
-    resultados = mp.newMap(numelements=15, prime=17, maptype="PROBING", loadfactor=0.5)
+    for genero in lt.iterator(mp.keySet(mapa)):
 
-    contador = 0
+        generoMapa = {
+            'genero': genero,
+            'mapa': mp.get(mapa, genero)['value']
+        }
 
-    while contador < 9:
+        lt.addLast(generosMayores, generoMapa)
 
-        mayor = 0
+    sorted_list = sortSizeGeneros(generosMayores)
 
-        generoMayor = None
-
-        for genero5 in lt.iterator(mp.keySet(mapa)):
-
-            llaveValorGenero = mp.get(mapa, genero5)['value']
-
-            if (mp.size(llaveValorGenero) > mayor) and (not lt.isPresent(generosMayores, genero5)):
-
-                mayor = mp.size(llaveValorGenero)
-
-                generoMayor = genero5
-
-        lt.addLast(generosMayores, generoMayor)
-
-        mp.put(resultados, generoMayor, mayor)
-
-        # mp.remove(mapa, generoMayor)
-
-        contador += 1
-
-    return generosMayores, resultados
+    return sorted_list
 
 
 
@@ -473,8 +456,9 @@ def req5UniqueTracks(analyzer, mapaGenero1):
         evento = {'track_id': eventoUnico, 'hashtags': mp.get(mapaUnicos, eventoUnico)['value']}
 
         lt.addLast(newList, evento)
-        
-    return mapaUnicos, newList
+    mapaUnicos = None
+    
+    return newList
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -523,6 +507,10 @@ def cmpDates(d1, d2):
 def cmpNumHashtags(track1, track2):
     return lt.size(track1['hashtags']) > lt.size(track2['hashtags'])
 
+
+def cmpGeneros(genero1, genero2):
+    return lt.size(genero1['mapa']) > lt.size(genero2['mapa'])
+
 # Funciones de ordenamiento
 
 
@@ -532,5 +520,14 @@ def sortNumHashtags(uniqueTracksList):
     sub_list = sub_list.copy()
 
     sorted_list = mergesort.sort(sub_list, cmpNumHashtags)
+
+    return sorted_list
+
+
+def sortSizeGeneros(generoList):
+    sub_list = lt.subList(generoList, 1, lt.size(generoList))
+    sub_list = sub_list.copy()
+
+    sorted_list = mergesort.sort(sub_list, cmpGeneros)
 
     return sorted_list

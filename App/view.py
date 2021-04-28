@@ -39,7 +39,7 @@ operación solicitada
 
 
 def printMenu():
-    print("Bienvenido")
+    print("\nBienvenido")
     print("*" * 70)
     print("1- Cargar información en el catálogo")
     print("2- REQ 1: Caracterizar las reproducciones")
@@ -102,18 +102,42 @@ def printReq4(mapa, elecciones):
     artist = None
 
 
-def printReq5(mapa):
+def printReq5(mapa, hora1, hora2):
+    print("====================== GENRES SORTED REPRODUCTIONS ======================")
 
-    valores = controller.getValuesReq5(mapa)
-    genero1 = lt.getElement(valores[0], 1)
-    contador = 0
-    for genero in lt.iterator(valores[0]):
-        contador += 1
-        size = mp.get(valores[1], genero)
-        print("\nTop {0}: {1} with {2} reps".format(contador, genero, size["value"]))
+    sorted_list = controller.getValuesReq5(mapa)
 
-    return genero1
+    iterador = 1
+    primerGenero = lt.getElement(sorted_list, 1)
 
+    totalRep = 0
+    
+    while iterador <= lt.size(sorted_list):
+        genero = lt.getElement(sorted_list, iterador)
+
+        print("\nTOP {0}: {1} with {2} reps".format(iterador, genero['genero'], mp.size(genero['mapa'])))
+        iterador += 1
+        totalRep += mp.size(genero['mapa'])
+        
+    print("\nThe TOP GENRE is {0} with {1} reproductions...".format(primerGenero['genero'], mp.size(primerGenero['mapa'])))
+    print("\nThere is a total of {0} reproductions between {1} and {2}".format(totalRep, hora1, hora2))
+    
+    return primerGenero
+
+
+def printReq5Part2(sorted_list, genero):
+    print("\n========================== Metal SENTIMENT ANALYSIS =========================")
+    print("{0} has {1} unique tracks...\nThe first TOP 10 tracks are...".format(genero, lt.size(sorted_list)))
+    
+    iterador = 1
+
+    while iterador <= 10:
+
+        track = lt.getElement(sorted_list, iterador)
+
+        print("\nTOP {0} track: {1} with {2} hashtags".format(iterador, track['track_id'], lt.size(track['hashtags'])))
+
+        iterador += 1
 
 
 
@@ -295,34 +319,40 @@ while True:
         filtroUniqueDates = om.values(analyzer['unique_dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
         
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
-        mapaUniqueDates = controller.req5Generos(filtroUniqueDates)
+        mapaUniqueDates = controller.req5Generos(filtroUniqueDates)  # user csv
 
-        genero1 = printReq5(mapaGenerosDates)
+        generoMasReps = printReq5(mapaGenerosDates, bajoTime, altoTime)  # tiene como llaves 'genero' y 'mapa'
         
-        mapaUniqueGenero1 = mp.get(mapaUniqueDates, genero1)['value']
+        mapaUniqueGenero1 = mp.get(mapaUniqueDates, generoMasReps['genero'])['value']  # user csv
 
         controller.addTrackHashtags(analyzer, mapaUniqueGenero1)
         
         
 
-        mapaGenero1 = mp.get(mapaGenerosDates, genero1)['value']  # mapa
+        mapaGenero1 = generoMasReps['mapa']
 
-        genero1UniqueTracks, listaUnicos = controller.req5UniqueTracks(analyzer, mapaGenero1)
+        listaUnicos = controller.req5UniqueTracks(analyzer, mapaGenero1)  # Tracks unicos + hashtags
 
         sorted_list = controller.sortNumHashtags(listaUnicos)
 
+        printReq5Part2(sorted_list, generoMasReps['genero'])
 
+        # Memoria
+        listaFiltroDates = None
+        filtroUniqueDates = None
 
-        iterador = 1
+        mapaGenerosDates = None
+        mapaUniqueDates = None
 
-        while iterador <= 10:
+        generoMasReps = None
 
-            track = lt.getElement(sorted_list, iterador)
+        mapaUniqueGenero1 = None
 
-            print("TOP {0} track: {1} with {2} hashtags".format(iterador, track['track_id'], lt.size(track['hashtags'])))
+        mapaGenero1 = None
 
-            iterador += 1
+        listaUnicos = None
 
+        sorted_list = None
 
 
     else:
