@@ -46,7 +46,7 @@ def newAnalyzer():
 
     analyzer['dates'] = om.newMap("RBT", cmpDates)
 
-    analyzer['dates_user'] = om.newMap("RBT", cmpDates)
+    analyzer['mapa_track_hashtag'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpTrack)
     
     return analyzer
 
@@ -109,20 +109,24 @@ def addDate(analyzer, filtered):
 
 
 
-def addDateUser(analyzer, filtered):
+def addTrackHashtags(analyzer, filtered):
 
-    datos = analyzer['dates_user']
-    valor = dt.datetime.strptime(filtered["created_at"], "%Y-%m-%d %H:%M:%S").time()
+    datos = analyzer['mapa_track_hashtag']
 
-    entry = om.get(datos, valor)
-    if entry is None:
+    track = mp.get(datos, filtered["track_id"])
+
+    if (track is None):
+
         lista = lt.newList("ARRAY_LIST")
-        lt.addLast(lista, filtered)
-        om.put(datos, valor, lista)
+        lt.addLast(lista, filtered['hashtag'])
+        mp.put(datos, filtered['track_id'], lista)
     else:
-        dateList = me.getValue(entry)
 
-        lt.addLast(dateList, filtered)
+        lista = track['value']
+
+        if lt.isPresent(lista, filtered['hashtag']) == 0:
+            lt.addLast(lista, filtered['hashtag'])
+    
 
 # Funciones para creacion de datos
 
@@ -420,6 +424,25 @@ def getValuesReq5(mapa):
     return generosMayores, resultados
 
 
+
+def req5UniqueTracks(analyzer, mapaGenero1):
+
+    mapaUnicos = mp.newMap(numelements=9973, maptype="PROBING", loadfactor=0.5)
+    for eventoUnico in lt.iterator(mp.keySet(mapaGenero1)):
+
+        evento = mp.get(mapaGenero1, eventoUnico)['value']
+        
+        if mp.get(mapaUnicos, evento['track_id']) is None:
+
+            listaHashtags = mp.get(analyzer['mapa_track_hashtag'], evento['track_id'])
+
+            if listaHashtags is not None:
+            
+                mp.put(mapaUnicos, evento['track_id'], listaHashtags['value'])
+            else:
+                mp.put(mapaUnicos, evento['track_id'], 0)
+
+    return mapaUnicos
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

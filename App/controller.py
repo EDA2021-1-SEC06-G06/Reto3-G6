@@ -67,7 +67,7 @@ def loadEvents(analyzer):
             "mode": float(line["mode"]),
             "key": float(line["key"]),
             "artist_id": line["artist_id"].replace(" ", ''),
-            "track_id": line["track_id"],
+            "track_id": line["track_id"].lower(),
             "user_id": line["user_id"],
             "id": line["id"],
             "created_at": line["created_at"]  # dt.datetime.strptime(line["created_at"], "%Y-%m-%d %H:%M:%S").time()
@@ -90,7 +90,7 @@ def loadUserTrack(analyzer):
         filtered = {
             'user_id': line['user_id'],
             "track_id": line["track_id"].replace(" ", ''),
-            "hashtag": line['hashtag'],
+            "hashtag": line['hashtag'].lower(),
             "created_at": line['created_at']
         }
         tempo = mp.get(analyzer['audios'], filtered['track_id'])
@@ -102,7 +102,8 @@ def loadUserTrack(analyzer):
 
         else:
             filtered['tempo'] = None
-        model.addDateUser(analyzer, filtered)
+        
+        model.addTrackHashtags(analyzer, filtered)
     return analyzer
 
 
@@ -188,3 +189,8 @@ def req5Generos(listaFiltroDates):
 def getValuesReq5(mapa):
 
     return model.getValuesReq5(mapa)
+
+
+def req5UniqueTracks(analyzer, mapaGenero1):
+
+    return model.req5UniqueTracks(analyzer, mapaGenero1)

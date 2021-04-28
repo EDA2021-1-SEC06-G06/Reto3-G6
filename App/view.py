@@ -155,7 +155,7 @@ while True:
         # cont es el controlador que se usará de acá en adelante
         analyzer = controller.init()
         controller.loadEvents(analyzer)
-        # controller.loadUserTrack(analyzer) TODO:
+        controller.loadUserTrack(analyzer)
 
         newTreeReq4 = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
         genreMap = controller.genreMap(newTreeReq4)
@@ -237,7 +237,7 @@ while True:
         while centinela is True:
             printGeneros(genreMap)
 
-            opcion = int(input("-Ingrese (1) para seleccionar los géneros a imprimir\n-Ingrese (2) si desea agregar un género\n-Ingrese (3) para imprimir los géneros seleccionados\n~ "))
+            opcion = int(input("-Ingrese (1) para seleccionar los géneros a imprimir\n-Ingrese (2) si desea agregar un género\n-Ingrese (3) para imprimir los géneros seleccionados\n-Ingrese (4) para salirse del requerimiento\n~ "))
 
 
             if opcion == 1:
@@ -292,24 +292,17 @@ while True:
         altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
 
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
-        # listaUserDates = om.values(analyzer['dates_user'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
         
         mapaGenerosDates = controller.req5Generos(listaFiltroDates)
-        # mapaUserDates = controller.req5Generos(listaUserDates)
 
         genero1 = printReq5(mapaGenerosDates)
 
         mapaGenero1 = mp.get(mapaGenerosDates, genero1)['value']  # mapa
 
-        mapaUnicos = mp.newMap(numelements=9973, maptype="PROBING", loadfactor=0.5)
-        for eventoUnico in lt.iterator(mp.keySet(mapaGenero1)):
+        genero1UniqueTracks = controller.req5UniqueTracks(analyzer, mapaGenero1)
 
-            evento = mp.get(mapaGenero1, eventoUnico)['value']
-            
-            if mp.get(mapaUnicos, evento['track_id']) is None:  # TODO: Ver cómo filtramos esto.
-                mp.put(mapaUnicos, evento['track_id'], None)
 
-        print(mp.size(mapaUnicos))
+        print(mp.size(genero1UniqueTracks))
 
 
 
