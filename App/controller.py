@@ -90,7 +90,7 @@ def loadUserTrack(analyzer):
         filtered = {
             'user_id': line['user_id'],
             "track_id": line["track_id"].replace(" ", ''),
-            "hashtag": line['hashtag'].lower(),
+            "hashtag": (line['hashtag'].lower().replace(' ', '')),
             "created_at": line['created_at']
         }
         tempo = mp.get(analyzer['audios'], filtered['track_id'])
@@ -108,6 +108,19 @@ def loadUserTrack(analyzer):
     return analyzer
 
 
+
+def loadSentimentValues(analyzer):
+    sentimentFile = cf.data_dir + 'sentiment_values.csv'
+    input_file = csv.DictReader(open(sentimentFile, encoding="utf-8"), delimiter=',')
+
+    for line in input_file:
+        filtered = {
+            'hashtag': (line['hashtag'].lower()).replace(' ', ''),
+            'vader': line['vader_avg']
+        }
+
+        model.addHashtag(analyzer, filtered)
+    return analyzer
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -205,3 +218,8 @@ def sortNumHashtags(uniqueTracksList):
 def addTrackHashtags(analyzer, mapaHoras):
 
     model.addTrackHashtags(analyzer, mapaHoras)
+
+
+def getSentimentAvg(analyzer, array_list):
+
+    return model.getSentimentAvg(analyzer, array_list)

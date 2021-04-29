@@ -41,15 +41,18 @@ def newAnalyzer():
 
     analyzer['eventos'] = lt.newList('ARRAY_LIST')
 
-    analyzer['artistas'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpArtistas)
+    analyzer['artistas'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=100000, comparefunction=cmpArtistas)
 
-    analyzer['audios'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpTrack)
+    analyzer['audios'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=100000, comparefunction=cmpTrack)
 
     analyzer['dates'] = om.newMap("RBT", cmpDates)
 
-    analyzer['mapa_track_hashtag'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=1000000, comparefunction=cmpTrack)
+    analyzer['mapa_track_hashtag'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=100000, comparefunction=cmpTrack)
 
     analyzer['unique_dates'] = om.newMap("RBT", cmpDates)
+
+    analyzer['sentiment'] = mp.newMap(maptype="PROBING", loadfactor=0.5, numelements=5297)
+    
     return analyzer
 
 
@@ -133,25 +136,37 @@ def addTrackHashtags(analyzer, mapaHoras):
 
     for track in lt.iterator(mp.keySet(mapaHoras)):
 
-        filtered = mp.get(mapaHoras, track)['value']
+        evento = mp.get(mapaHoras, track)['value']  # evento del context csv
         
-        track = mp.get(datos, filtered["track_id"])
+        trackHashtagsList = mp.get(datos, evento["track_id"])  # lista de hashtags del track
 
         
+        
 
-        if (track is None):
-
+        if (trackHashtagsList is None):
             lista = lt.newList("ARRAY_LIST")
-            lt.addLast(lista, filtered['hashtag'])
-            mp.put(datos, filtered['track_id'], lista)
+            
+            lt.addLast(lista, evento['hashtag'])
+                
+            mp.put(datos, evento['track_id'], lista)
+            
         else:
 
-            lista = track['value']
+            lista = trackHashtagsList['value']
 
-            if lt.isPresent(lista, filtered['hashtag']) == 0:
-                lt.addLast(lista, filtered['hashtag'])
-        
+            if lt.isPresent(lista, evento['hashtag']) == 0:
+                lt.addLast(lista, evento['hashtag'])
 
+
+
+def addHashtag(analyzer, filtered):
+
+    datos = analyzer['sentiment']
+    
+    if filtered['vader'] != '':
+        mp.put(datos, filtered['hashtag'], float(filtered['vader']))
+
+   
 # Funciones para creacion de datos
 
 # Funciones de consulta
@@ -459,6 +474,25 @@ def req5UniqueTracks(analyzer, mapaGenero1):
     mapaUnicos = None
     
     return newList
+
+
+def getSentimentAvg(analyzer, array_list):
+    datos = analyzer['sentiment']  # HashTable
+    suma = 0
+    size = lt.size(array_list)
+    for hashtag in lt.iterator(array_list):
+        
+        valor = mp.get(datos, hashtag)
+
+        if valor is not None:
+            valor = valor['value']
+
+            suma += valor
+        else:
+            size -= 1
+    return (suma / size)
+        
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

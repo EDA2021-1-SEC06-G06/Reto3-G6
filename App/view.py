@@ -129,7 +129,7 @@ def printReq5(mapa, hora1, hora2):
     return primerGenero
 
 
-def printReq5Part2(sorted_list, genero):
+def printReq5Part2(analyzer, sorted_list, genero):
     print("\n========================== Metal SENTIMENT ANALYSIS =========================")
     print("{0} has {1} unique tracks...\nThe first TOP 10 tracks are...".format(genero, lt.size(sorted_list)))
     
@@ -138,8 +138,8 @@ def printReq5Part2(sorted_list, genero):
     while iterador <= 10:
 
         track = lt.getElement(sorted_list, iterador)
-
-        print("\nTOP {0} track: {1} with {2} hashtags".format(iterador, track['track_id'], lt.size(track['hashtags'])))
+        avg = controller.getSentimentAvg(analyzer, track['hashtags'])
+        print("\nTOP {0} track: {1} with {2} hashtags and VADER = {3}".format(iterador, track['track_id'], lt.size(track['hashtags']), avg))
 
         iterador += 1
 
@@ -232,6 +232,7 @@ while True:
         analyzer = controller.init()
         controller.loadEvents(analyzer)
         controller.loadUserTrack(analyzer)
+        controller.loadSentimentValues(analyzer)
 
         newTreeReq4 = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
         genreMap = controller.genreMap(newTreeReq4)
@@ -532,7 +533,7 @@ while True:
 
         sorted_list = controller.sortNumHashtags(listaUnicos)
 
-        printReq5Part2(sorted_list, generoMasReps['genero'])
+        printReq5Part2(analyzer, sorted_list, generoMasReps['genero'])
 
         # Memoria
         listaFiltroDates = None
