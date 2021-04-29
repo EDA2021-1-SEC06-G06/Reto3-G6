@@ -483,10 +483,6 @@ while True:
 
                 print("Su género ha sido agregado, NO tiene que seleccionarlo en la opción 1")
 
-                # INICIO
-                print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
-                # FIN
-
 
             elif opcion == 3:
                 print("¿Desea la información de los siguientes géneros?:")
@@ -496,35 +492,7 @@ while True:
 
                 if yesOrno.lower() == 'y':
 
-                    print(elecciones)
-                    # INICIO
-                    # respuesta por defecto
-                    delta_time = -1.0
-                    delta_memory = -1.0
-
-                    # inicializa el processo para medir memoria
-                    tracemalloc.start()
-
-                    # toma de tiempo y memoria al inicio del proceso
-                    start_time = getTime()
-                    start_memory = getMemory()
-                    # FIN
-
                     printReq4(genreMap, elecciones)
-
-                    # INICIO
-                    # toma de tiempo y memoria al final del proceso
-                    stop_memory = getMemory()
-                    stop_time = getTime()
-
-                    # finaliza el procesos para medir memoria
-                    tracemalloc.stop()
-
-                    # calculando la diferencia de tiempo y memoria
-                    delta_time = stop_time - start_time
-                    delta_memory = deltaMemory(start_memory, stop_memory)
-
-                    # FIN
 
                     # INICIO
                     print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
