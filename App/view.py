@@ -513,6 +513,19 @@ while True:
         bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
         altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
 
+        # INICIO
+        # respuesta por defecto
+        delta_time = -1.0
+        delta_memory = -1.0
+
+        # inicializa el processo para medir memoria
+        tracemalloc.start()
+
+        # toma de tiempo y memoria al inicio del proceso
+        start_time = getTime()
+        start_memory = getMemory()
+        # FIN
+
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
         filtroUniqueDates = om.values(analyzer['unique_dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
 
@@ -525,15 +538,31 @@ while True:
 
         controller.addTrackHashtags(analyzer, mapaUniqueGenero1)
 
-
-
         mapaGenero1 = generoMasReps['mapa']
 
         listaUnicos = controller.req5UniqueTracks(analyzer, mapaGenero1)  # Tracks unicos + hashtags
 
         sorted_list = controller.sortNumHashtags(listaUnicos)
 
+        # INICIO
+        # toma de tiempo y memoria al final del proceso
+        stop_memory = getMemory()
+        stop_time = getTime()
+
+        # finaliza el procesos para medir memoria
+        tracemalloc.stop()
+
+        # calculando la diferencia de tiempo y memoria
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+
+        # FIN
+
         printReq5Part2(analyzer, sorted_list, generoMasReps['genero'])
+
+        # INICIO
+        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
+        # FIN
 
         # Memoria
         listaFiltroDates = None
