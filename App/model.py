@@ -137,19 +137,19 @@ def addTrackHashtags(analyzer, mapaHoras):
     for track in lt.iterator(mp.keySet(mapaHoras)):
 
         evento = mp.get(mapaHoras, track)['value']  # evento del context csv
-        
+
         trackHashtagsList = mp.get(datos, evento["track_id"])  # lista de hashtags del track
 
-        
-        
+
+
 
         if (trackHashtagsList is None):
             lista = lt.newList("ARRAY_LIST")
-            
+
             lt.addLast(lista, evento['hashtag'])
-                
+
             mp.put(datos, evento['track_id'], lista)
-            
+
         else:
 
             lista = trackHashtagsList['value']
@@ -162,11 +162,11 @@ def addTrackHashtags(analyzer, mapaHoras):
 def addHashtag(analyzer, filtered):
 
     datos = analyzer['sentiment']
-    
+
     if filtered['vader'] != '':
         mp.put(datos, filtered['hashtag'], float(filtered['vader']))
 
-   
+
 # Funciones para creacion de datos
 
 # Funciones de consulta

@@ -104,7 +104,7 @@ def loadUserTrack(analyzer):
             filtered['tempo'] = None
 
         model.addUniqueDates(analyzer, filtered)
-        
+
     return analyzer
 
 

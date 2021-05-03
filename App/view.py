@@ -20,10 +20,6 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 from random import randint
-# INICIO
-import tracemalloc
-import time
-# FIN
 import datetime as dt
 import config as cf
 import sys
@@ -115,24 +111,24 @@ def printReq5(mapa, hora1, hora2):
     primerGenero = lt.getElement(sorted_list, 1)
 
     totalRep = 0
-    
+
     while iterador <= lt.size(sorted_list):
         genero = lt.getElement(sorted_list, iterador)
 
         print("\nTOP {0}: {1} with {2} reps".format(iterador, genero['genero'], mp.size(genero['mapa'])))
         iterador += 1
         totalRep += mp.size(genero['mapa'])
-        
+
     print("\nThe TOP GENRE is {0} with {1} reproductions...".format(primerGenero['genero'], mp.size(primerGenero['mapa'])))
     print("\nThere is a total of {0} reproductions between {1} and {2}".format(totalRep, hora1, hora2))
-    
+
     return primerGenero
 
 
 def printReq5Part2(analyzer, sorted_list, genero):
     print("\n========================== Metal SENTIMENT ANALYSIS =========================")
     print("{0} has {1} unique tracks...\nThe first TOP 10 tracks are...".format(genero, lt.size(sorted_list)))
-    
+
     iterador = 1
 
     while iterador <= 10:
@@ -164,40 +160,6 @@ def printGeneros(mapa):
         posicion += 1
 
 
-# Funciones para contar tiempo y memoria:
-
-def getTime():
-    """
-    devuelve el instante tiempo de procesamiento en milisegundos
-    """
-    return float(time.perf_counter() * 1000)
-
-
-def getMemory():
-    """
-    toma una muestra de la memoria alocada en instante de tiempo
-    """
-    return tracemalloc.take_snapshot()
-
-
-def deltaMemory(start_memory, stop_memory):
-    """
-    calcula la diferencia en memoria alocada del programa entre dos
-    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
-    """
-    memory_diff = stop_memory.compare_to(start_memory, "filename")
-    delta_memory = 0.0
-
-    # suma de las diferencias en uso de memoria
-    for stat in memory_diff:
-        delta_memory = delta_memory + stat.size_diff
-    # de Byte -> kByte
-    delta_memory = delta_memory / 1024.0
-    return delta_memory
-
-# Final de las funciones para borrar despues.
-
-
 
 default_limit = 1000
 sys.setrecursionlimit(default_limit * 10)
@@ -215,18 +177,6 @@ while True:
 
         print("Cargando información de los archivos ....")
 
-        # INICIO
-        # respuesta por defecto
-        delta_time = -1.0
-        delta_memory = -1.0
-
-        # inicializa el processo para medir memoria
-        tracemalloc.start()
-
-        # toma de tiempo y memoria al inicio del proceso
-        start_time = getTime()
-        start_memory = getMemory()
-        # FIN
 
         # cont es el controlador que se usará de acá en adelante
         analyzer = controller.init()
@@ -237,29 +187,12 @@ while True:
         newTreeReq4 = controller.getCar(analyzer, 'tempo')  # árbol según valores de "tempo"
         genreMap = controller.genreMap(newTreeReq4)
 
-        # INICIO
-        # toma de tiempo y memoria al final del proceso
-        stop_memory = getMemory()
-        stop_time = getTime()
-
-        # finaliza el procesos para medir memoria
-        tracemalloc.stop()
-
-        # calculando la diferencia de tiempo y memoria
-        delta_time = stop_time - start_time
-        delta_memory = deltaMemory(start_memory, stop_memory)
-
-        # FIN
 
         print("Cantidad de Eventos: {0}".format(lt.size(analyzer['eventos'])))
 
         print("Cantidad de Artistas: {0}".format(mp.size(analyzer['artistas'])))
 
         print("Cantidad de Tracks: {0}".format(mp.size(analyzer['audios'])))
-
-        # INICIO
-        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
-        # FIN
 
 
 
@@ -271,42 +204,11 @@ while True:
 
         print("\nCargando datos según la característica....")
 
-        # INICIO
-        # respuesta por defecto
-        delta_time = -1.0
-        delta_memory = -1.0
-
-        # inicializa el processo para medir memoria
-        tracemalloc.start()
-
-        # toma de tiempo y memoria al inicio del proceso
-        start_time = getTime()
-        start_memory = getMemory()
-        # FIN
-
         newTree = controller.getCar(analyzer, car)
 
         total, mapa = controller.getValuesReq1(newTree, bajo, alto)
 
-        # INICIO
-        # toma de tiempo y memoria al final del proceso
-        stop_memory = getMemory()
-        stop_time = getTime()
-
-        # finaliza el procesos para medir memoria
-        tracemalloc.stop()
-
-        # calculando la diferencia de tiempo y memoria
-        delta_time = stop_time - start_time
-        delta_memory = deltaMemory(start_memory, stop_memory)
-
-        # FIN
-
         print("\nTotal de reproducción: {0}\n\nTotal de artistas únicos: {1}\n".format(mp.size(total), mp.size(mapa)))
-
-        # INICIO
-        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
-        # FIN
 
         mapa = None
         newTree = None  # Espacio en Memoria
@@ -322,46 +224,15 @@ while True:
         bajoDance = float(input("\nIngrese el mínimo del rango para Danceability:\n~"))
         altoDance = float(input("\nIngrese el máximo del rango para Danceability:\n~"))
 
-        # INICIO
-        # respuesta por defecto
-        delta_time = -1.0
-        delta_memory = -1.0
-
-        # inicializa el processo para medir memoria
-        tracemalloc.start()
-
-        # toma de tiempo y memoria al inicio del proceso
-        start_time = getTime()
-        start_memory = getMemory()
-        # FIN
-
         newTree = controller.getCar(analyzer, 'energy')  # árbol según valores de "energy"
 
         mapaVideosRango = controller.getValuesReq2and3(newTree, bajoEnergy, altoEnergy, bajoDance, altoDance, 2)
         # ^^ un mapa con los vídeos dentro del rango
 
-        # INICIO
-        # toma de tiempo y memoria al final del proceso
-        stop_memory = getMemory()
-        stop_time = getTime()
-
-        # finaliza el procesos para medir memoria
-        tracemalloc.stop()
-
-        # calculando la diferencia de tiempo y memoria
-        delta_time = stop_time - start_time
-        delta_memory = deltaMemory(start_memory, stop_memory)
-
-        # FIN
-
         print("\nEnergy is between {0} and {1}\n".format(bajoEnergy, altoEnergy))
         print("Tempo is between {0} and {1}\n".format(bajoDance, altoDance))
 
         printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
-
-        # INICIO
-        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
-        # FIN
 
 
 
@@ -374,37 +245,11 @@ while True:
         bajoTempo = float(input("\nIngrese el mínimo del rango para Tempo:\n~"))
         altoTempo = float(input("\nIngrese el máximo del rango para Tempo:\n~"))
 
-        # INICIO
-        # respuesta por defecto
-        delta_time = -1.0
-        delta_memory = -1.0
-
-        # inicializa el processo para medir memoria
-        tracemalloc.start()
-
-        # toma de tiempo y memoria al inicio del proceso
-        start_time = getTime()
-        start_memory = getMemory()
-        # FIN
 
         newTree = controller.getCar(analyzer, 'instrumentalness')  # árbol según valores de "instrumentalness"
 
         mapaVideosRango = controller.getValuesReq2and3(newTree, bajoInstrumental, altoInstrumental, bajoTempo, altoTempo, 3)
         # ^^ un mapa con los vídeos dentro del rango
-
-        # INICIO
-        # toma de tiempo y memoria al final del proceso
-        stop_memory = getMemory()
-        stop_time = getTime()
-
-        # finaliza el procesos para medir memoria
-        tracemalloc.stop()
-
-        # calculando la diferencia de tiempo y memoria
-        delta_time = stop_time - start_time
-        delta_memory = deltaMemory(start_memory, stop_memory)
-
-        # FIN
 
         print("\nEnergy is between {0} and {1}\n".format(bajoEnergy, altoEnergy))
         print("Tempo is between {0} and {1}\n".format(bajoDance, altoDance))
@@ -414,9 +259,6 @@ while True:
 
         printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
 
-        # INICIO
-        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
-        # FIN
 
 
 
@@ -453,34 +295,7 @@ while True:
                 bajoTempo = float(input("\nIngrese el mínimo del rango para el Tempo de {0}:\n~ ".format(genero)))
                 altoTempo = float(input("\nIngrese el máximo del rango para el Tempo de {0}:\n~ ".format(genero)))
 
-                # INICIO
-                # respuesta por defecto
-                delta_time = -1.0
-                delta_memory = -1.0
-
-                # inicializa el processo para medir memoria
-                tracemalloc.start()
-
-                # toma de tiempo y memoria al inicio del proceso
-                start_time = getTime()
-                start_memory = getMemory()
-                # FIN
-
                 genreMap = controller.addGenre(genreMap, genero, bajoTempo, altoTempo, newTreeReq4)
-
-                # INICIO
-                # toma de tiempo y memoria al final del proceso
-                stop_memory = getMemory()
-                stop_time = getTime()
-
-                # finaliza el procesos para medir memoria
-                tracemalloc.stop()
-
-                # calculando la diferencia de tiempo y memoria
-                delta_time = stop_time - start_time
-                delta_memory = deltaMemory(start_memory, stop_memory)
-
-                # FIN
 
                 print("Su género ha sido agregado, NO tiene que seleccionarlo en la opción 1")
 
@@ -495,10 +310,6 @@ while True:
 
                     printReq4(genreMap, elecciones)
 
-                    # INICIO
-                    print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
-                    # FIN
-
                 elecciones = ''
 
             else:
@@ -512,19 +323,6 @@ while True:
 
         bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
         altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
-
-        # INICIO
-        # respuesta por defecto
-        delta_time = -1.0
-        delta_memory = -1.0
-
-        # inicializa el processo para medir memoria
-        tracemalloc.start()
-
-        # toma de tiempo y memoria al inicio del proceso
-        start_time = getTime()
-        start_memory = getMemory()
-        # FIN
 
         listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
         filtroUniqueDates = om.values(analyzer['unique_dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
@@ -544,25 +342,7 @@ while True:
 
         sorted_list = controller.sortNumHashtags(listaUnicos)
 
-        # INICIO
-        # toma de tiempo y memoria al final del proceso
-        stop_memory = getMemory()
-        stop_time = getTime()
-
-        # finaliza el procesos para medir memoria
-        tracemalloc.stop()
-
-        # calculando la diferencia de tiempo y memoria
-        delta_time = stop_time - start_time
-        delta_memory = deltaMemory(start_memory, stop_memory)
-
-        # FIN
-
         printReq5Part2(analyzer, sorted_list, generoMasReps['genero'])
-
-        # INICIO
-        print("\nTiempo [ms]: ", delta_time, "  ||  ", "Memoria [kB]: ", delta_memory, "\n")
-        # FIN
 
         # Memoria
         listaFiltroDates = None
