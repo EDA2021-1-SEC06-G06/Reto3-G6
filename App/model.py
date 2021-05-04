@@ -553,6 +553,14 @@ def cmpGeneros(genero1, genero2):
 
 
 def sortNumHashtags(uniqueTracksList):
+    """[summary]
+
+    Args:
+        uniqueTracksList ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     sub_list = lt.subList(uniqueTracksList, 1, lt.size(uniqueTracksList))
     sub_list = sub_list.copy()
 

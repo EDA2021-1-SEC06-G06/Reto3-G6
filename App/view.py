@@ -46,7 +46,8 @@ def printMenu():
     print("3- REQ 2: Encontrar música para festejar")
     print("4- REQ 3: Encontrar música para estudiar")
     print("5- REQ 4: Estudiar los géneros musicales")
-    print("6- REQ 5: Indicar el género musical más escuchado en el tiempo")
+    print("6- REQ 5: Indicar el género musical más escuchado en un rango de tiempo")
+    print("7- REQ 5: Indicar el género musical más escuchado en un rango de tiempo RANDOM")
     print("0- APAGAR EL PROGRAMA")
     print("*" * 70)
 
@@ -123,11 +124,13 @@ def printReq5(mapa, hora1, hora2):
     print("\nThere is a total of {0} reproductions between {1} and {2}".format(totalRep, hora1, hora2))
 
     return primerGenero
+    
+
 
 
 def printReq5Part2(analyzer, sorted_list, genero):
-    print("\n========================== Metal SENTIMENT ANALYSIS =========================")
-    print("{0} has {1} unique tracks...\nThe first TOP 10 tracks are...".format(genero, lt.size(sorted_list)))
+    print("\n========================== {0} SENTIMENT ANALYSIS =========================".format(genero.upper()))
+    print("{0} has {1} unique tracks...\nThe first TOP 10 tracks are...".format(genero.upper(), lt.size(sorted_list)))
 
     iterador = 1
 
@@ -140,6 +143,35 @@ def printReq5Part2(analyzer, sorted_list, genero):
         iterador += 1
 
 
+
+def printReq5Opcion2(analyzer, lista_unicos, genero):
+    print("\n========================== {0} SENTIMENT ANALYSIS =========================".format(genero.upper()))
+    print("{0} has {1} unique tracks...\nThe first TOP 10 tracks are...".format(genero.upper(), lt.size(lista_unicos)))
+
+    newList = lt.newList("ARRAY_LIST")
+
+    for num in range(10):
+        numRandom = randint(1, lt.size(lista_unicos))
+
+        track = lt.getElement(lista_unicos, numRandom)
+
+        lt.addLast(newList, track)
+
+    sorted_list = controller.sortNumHashtags(newList)
+
+    iterador = 1
+
+    while iterador <= 10:
+
+        track = lt.getElement(sorted_list, iterador)
+
+        avg = controller.getSentimentAvg(analyzer, track['hashtags'])
+
+        print("\nTOP {0} track: {1} with {2} hashtags and VADER = {3}".format(iterador, track['track_id'], lt.size(track['hashtags']), avg))
+
+        iterador += 1
+
+    
 
 
 def printGeneros(mapa):
@@ -208,7 +240,7 @@ while True:
 
         total, mapa = controller.getValuesReq1(newTree, bajo, alto)
 
-        print("\nTotal de reproducción: {0}\n\nTotal de artistas únicos: {1}\n".format(mp.size(total), mp.size(mapa)))
+        print("\nTotal de reproducciones: {0}\n\nTotal de artistas únicos: {1}\n".format(mp.size(total), mp.size(mapa)))
 
         mapa = None
         newTree = None  # Espacio en Memoria
@@ -234,6 +266,10 @@ while True:
 
         printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
 
+        # Memoria
+        
+        newTree = None
+        mapaVideosRango = None
 
 
     elif int(inputs[0]) == 4:
@@ -259,6 +295,11 @@ while True:
 
         printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
 
+
+        # Memoria
+
+        newTree = None
+        mapaVideosRango = None
 
 
 
@@ -318,7 +359,7 @@ while True:
 
 
 
-    elif int(inputs[0]) == 6:  # TODO: Ver qué archivo toca usar ughhhhhhhhh
+    elif int(inputs[0]) == 6:  
         print("\n++++++ Req No. 5 results... ++++++\n")
 
         bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
@@ -360,6 +401,50 @@ while True:
         listaUnicos = None
 
         sorted_list = None
+
+
+    elif int(inputs[0]) == 7:  
+        print("\n++++++ Req No. 5 results... ++++++\n")
+
+        bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
+        altoTime = input("Ingrese el máximo del rango de la siguiente forma: H:M:S\n~ ")
+
+        listaFiltroDates = om.values(analyzer['dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
+        filtroUniqueDates = om.values(analyzer['unique_dates'], dt.datetime.strptime(bajoTime, "%H:%M:%S").time(), dt.datetime.strptime(altoTime, "%H:%M:%S").time())
+
+        mapaGenerosDates = controller.req5Generos(listaFiltroDates)
+        mapaUniqueDates = controller.req5Generos(filtroUniqueDates)  # user csv
+
+        generoMasReps = printReq5(mapaGenerosDates, bajoTime, altoTime)  # tiene como llaves 'genero' y 'mapa'
+
+        mapaUniqueGenero1 = mp.get(mapaUniqueDates, generoMasReps['genero'])['value']  # user csv
+
+        controller.addTrackHashtags(analyzer, mapaUniqueGenero1)
+
+        mapaGenero1 = generoMasReps['mapa']
+
+        listaUnicos = controller.req5UniqueTracks(analyzer, mapaGenero1)  # Tracks unicos + hashtags
+
+        printReq5Opcion2(analyzer, listaUnicos, generoMasReps['genero'])
+
+
+        # Memoria
+        listaFiltroDates = None
+        filtroUniqueDates = None
+
+        mapaGenerosDates = None
+        mapaUniqueDates = None
+
+        generoMasReps = None
+
+        mapaUniqueGenero1 = None
+
+        mapaGenero1 = None
+
+        listaUnicos = None
+
+        sorted_list = None
+
 
 
     else:
