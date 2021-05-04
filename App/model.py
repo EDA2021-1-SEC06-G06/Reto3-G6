@@ -490,6 +490,9 @@ def getSentimentAvg(analyzer, array_list):
             suma += valor
         else:
             size -= 1
+
+    if size == 0:
+        return 0
     return (suma / size)
         
 
