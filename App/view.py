@@ -52,6 +52,25 @@ def printMenu():
     print("*" * 70)
 
 
+def printReq2(mapa):
+    size = mp.size(mapa)
+    print("Total of unique tracks in events: {0}".format(size))
+
+    llaves = mp.keySet(mapa)
+
+    print("\n--- Unique track_id ---\n")
+
+    for num in range(5):
+        numRandom = randint(1, size)  # número al azar entre 1 y el size del mapa
+
+        track = lt.getElement(llaves, numRandom)  # se optiene el track_id de uno de los tracks al azar
+        track = mp.get(mapa, track)['value']  # se obtiene el valor de la pareja (llave - valor)
+
+        print("Track {0}: {1} with energy of {2} and danceability of {3}\n".format((num + 1), track["track_id"], track["energy"], track['danceability']))
+
+    mapa = None
+
+
 def printReq3(mapa):
     size = mp.size(mapa)
     print("Total of unique tracks in events: {0}".format(size))
@@ -124,7 +143,7 @@ def printReq5(mapa, hora1, hora2):
     print("\nThere is a total of {0} reproductions between {1} and {2}".format(totalRep, hora1, hora2))
 
     return primerGenero
-    
+
 
 
 
@@ -171,7 +190,7 @@ def printReq5Opcion2(analyzer, lista_unicos, genero):
 
         iterador += 1
 
-    
+
 
 
 def printGeneros(mapa):
@@ -264,10 +283,10 @@ while True:
         print("\nEnergy is between {0} and {1}\n".format(bajoEnergy, altoEnergy))
         print("Tempo is between {0} and {1}\n".format(bajoDance, altoDance))
 
-        printReq3(mapaVideosRango)  # función para imprimir cinco tracks al azar
+        printReq2(mapaVideosRango)  # función para imprimir cinco tracks al azar
 
         # Memoria
-        
+
         newTree = None
         mapaVideosRango = None
 
@@ -359,7 +378,7 @@ while True:
 
 
 
-    elif int(inputs[0]) == 6:  
+    elif int(inputs[0]) == 6:
         print("\n++++++ Req No. 5 results... ++++++\n")
 
         bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
@@ -403,7 +422,7 @@ while True:
         sorted_list = None
 
 
-    elif int(inputs[0]) == 7:  
+    elif int(inputs[0]) == 7:
         print("\n++++++ Req No. 5 results... ++++++\n")
 
         bajoTime = input("Ingrese el mínimo del rango de la siguiente forma: H:M:S\n~ ")
